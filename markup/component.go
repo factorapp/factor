@@ -2,6 +2,7 @@ package markup
 
 import (
 	"reflect"
+	"syscall/js"
 
 	"github.com/murlokswarm/log"
 	"github.com/pkg/errors"
@@ -108,6 +109,22 @@ func Component(id uuid.UUID) Componer {
 // Markup returns the markup of c.
 func Markup(c Componer) string {
 	return Root(c).Markup()
+}
+
+// MountBody mounts the component in the <body> tag
+func MountBody(c Componer) (root *Node, err error) {
+	ctx := uuid.Must(uuid.NewV1())
+	node, err := Mount(c, ctx)
+	el := js.Global().Get("document").Call("getElementsByTagName", "BODY").Index(0)
+	el.Set("innerHTML", node.Markup())
+	return node, err
+}
+
+// MountAtElement mounts the component at the dom element represented by `el`
+func MountAtElement(c Componer, ctx uuid.UUID, el js.Value) (root *Node, err error) {
+	node, err := Mount(c, ctx)
+	el.Set("innerHTML", node.Markup())
+	return node, err
 }
 
 // Mount retains a component and its underlying nodes.

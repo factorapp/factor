@@ -7,7 +7,7 @@
 Package markup implements a markup language to build user interfaces.
 
 Markups are based on HTML. They must be declared in the Render method when
-implementing the Componer interface.
+implementing the Component interface.
 A markup must follow these rules:
 - Regular HTML elements must be in lowercase.
 - Root element of a component must be a standard HTML tag.
