@@ -2,6 +2,7 @@ package component
 
 import (
 	"bytes"
+	"strings"
 	"testing"
 )
 
@@ -62,10 +63,7 @@ var goodStyle = `<style>
 </style>`
 
 func TestParse(t *testing.T) {
-	good := goodTpl + "\n" + goodStyle
-	b := bytes.NewBuffer([]byte(good))
-
-	c, err := Parse(b, "good")
+	c := parse(t)
 	if c.Template != goodTpl {
 		t.Errorf("Template Mismatch")
 	}
@@ -73,7 +71,44 @@ func TestParse(t *testing.T) {
 	if c.Style != removeStyleTags(goodStyle) {
 		t.Errorf("Style Mismatch")
 	}
+}
+func TestQuoted(t *testing.T) {
+	c := parse(t)
+	qs := c.QuotedStyle()
+	if strings.Compare(qs[0:1], "`") != 0 {
+		t.Errorf("expected style to start with backtick, got: %s", qs[0:1])
+	}
+	qt := c.QuotedTemplate()
+	if strings.Compare(qt[len(qt)-1:len(qt)], "`") != 0 {
+		t.Errorf("expected template to start with backtick, got: %s", qt[len(qt)-1:len(qt)])
+	}
+}
+func parse(t *testing.T) *Component {
+
+	good := goodTpl + "\n" + goodStyle
+	b := bytes.NewBuffer([]byte(good))
+
+	c, e := Parse(b, "Good")
+	if e != nil {
+		t.Fatal("failed to parse template")
+	}
+	return c
+}
+
+func TestTransformUnparsed(t *testing.T) {
+	c := &Component{}
+	err := c.Transform()
+	if err != ErrComponentNotParsed {
+		t.Error("Expected ErrComponentNotParsed on unparsed component")
+	}
+}
+
+func TestTransform(t *testing.T) {
+	c := parse(t)
+	c.Package = "mypackage"
+	err := c.Transform()
 	if err != nil {
 		t.Error(err)
 	}
+	// TODO: Compare against golden
 }
