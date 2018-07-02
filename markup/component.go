@@ -171,7 +171,8 @@ func Mount(c Componer, ctx uuid.UUID) (root *Node, err error) {
 		Count: 1,
 		Root:  root,
 	}
-
+	//t := reflect.TypeOf(c)
+	//registerCallback(t)
 	if mounter, isMounter := c.(Mounter); isMounter {
 		mounter.OnMount()
 	}

@@ -38,16 +38,17 @@ var (
 
 // Node represents a markup node.
 type Node struct {
-	ID         uuid.UUID
-	ContextID  uuid.UUID
-	Type       NodeType
-	Tag        string
-	Text       string
-	Attributes AttributeMap
-	Component  Componer
-	Mount      Componer
-	Parent     *Node
-	Children   []*Node
+	ID             uuid.UUID
+	ContextID      uuid.UUID
+	Type           NodeType
+	Tag            string
+	Text           string
+	Attributes     AttributeMap
+	Component      Componer
+	Mount          Componer
+	Parent         *Node
+	Children       []*Node
+	eventListeners []*EventListener
 }
 
 // NodeType represents the type of the node.
@@ -89,10 +90,6 @@ func (n *Node) markup(indent int) string {
 	b.WriteString(indt)
 	b.WriteRune('<')
 	b.WriteString(n.Tag)
-	b.WriteRune(' ')
-	b.WriteString(`data-murlok-id="`)
-	b.WriteString(n.ID.String())
-	b.WriteRune('"')
 	b.WriteRune(' ')
 	b.WriteString(`id="`)
 	b.WriteString(n.ID.String())
