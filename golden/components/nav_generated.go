@@ -1,11 +1,20 @@
-<nav>
+
+package components
+
+import (
+	
+	"github.com/bketelsen/factor/markup"
+)
+
+
+
+var NavTemplate =  `<nav>
 	<ul>
 		<li>This is an item</li>
 		<li>This is another item</li> 
 	</ul>
-</nav>
-
-<style>
+</nav>` 
+var NavStyles = `
 	nav {
 		border-bottom: 1px solid rgba(170, 30, 30, 0.1);
 		font-weight: 300;
@@ -50,4 +59,13 @@
 		padding: 1em 0.5em;
 		display: block;
 	}
-</style>
+`
+
+
+func (t *Nav) Render() string {
+	return NavTemplate
+}
+
+func init() {
+	markup.Register(&Nav{})
+}

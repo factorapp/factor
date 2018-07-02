@@ -1,4 +1,16 @@
-<h1>
+
+package components
+
+import (
+	
+	"github.com/bketelsen/factor/markup"
+)
+
+type Index struct {
+
+}
+
+var IndexTemplate =  `<h1>
 	Great success!</h1>
 
 <figure>
@@ -8,9 +20,8 @@
 
 <p>
 	<strong>Try editing this file (routes/index.html) to test hot module reloading.</strong>
-</p>
-
-<style>
+</p>` 
+var IndexStyles = `
 	h1,
 	figure,
 	p {
@@ -44,4 +55,13 @@
 			font-size: 4em;
 		}
 	}
-</style>
+`
+
+
+func (t *Index) Render() string {
+	return IndexTemplate
+}
+
+func init() {
+	markup.Register(&Index{})
+}

@@ -21,6 +21,7 @@ type Component struct {
 	Package  string
 	Imports  []string
 	parsed   bool
+	Struct   bool
 }
 
 func (c *Component) WriteImports() string {
