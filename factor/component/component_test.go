@@ -97,7 +97,8 @@ func parse(t *testing.T) *Component {
 
 func TestTransformUnparsed(t *testing.T) {
 	c := &Component{}
-	err := c.Transform()
+	b := new(bytes.Buffer)
+	err := c.Transform(b)
 	if err != ErrComponentNotParsed {
 		t.Error("Expected ErrComponentNotParsed on unparsed component")
 	}
@@ -106,7 +107,8 @@ func TestTransformUnparsed(t *testing.T) {
 func TestTransform(t *testing.T) {
 	c := parse(t)
 	c.Package = "mypackage"
-	err := c.Transform()
+	b := new(bytes.Buffer)
+	err := c.Transform(b)
 	if err != nil {
 		t.Error(err)
 	}

@@ -1,7 +1,7 @@
 package component
 
 var comptpl = `
-package {{.Package}}
+package components
 
 import (
 	{{.WriteImports}}

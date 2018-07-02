@@ -3,7 +3,6 @@ package component
 import (
 	"io"
 	"io/ioutil"
-	"os"
 	"strings"
 	"text/template"
 
@@ -68,12 +67,12 @@ func Parse(r io.Reader, name string) (*Component, error) {
 	return c, err
 }
 
-func (c *Component) Transform() error {
+func (c *Component) Transform(w io.Writer) error {
 	if !c.parsed {
 		return ErrComponentNotParsed
 	}
 	tpl := template.Must(template.New("component").Parse(comptpl))
-	err := tpl.Execute(os.Stdout, c)
+	err := tpl.Execute(w, c)
 	if err != nil {
 		return err
 	}
