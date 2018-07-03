@@ -8,15 +8,14 @@ import (
 	"github.com/bketelsen/factor/markup"
 )
 
-{{ if .Struct }}type {{.Name}} struct {
-
-}{{end}}
-
 var {{.Name}}Template =  {{.QuotedTemplate}} 
 var {{.Name}}Styles = {{.QuotedStyle}}
 
+type {{.Name}} struct{
 
-func (t *{{.Name}}) Render() string {
+}
+
+func (t *{{.Name}}) Render() {
 	return {{.Name}}Template
 }
 

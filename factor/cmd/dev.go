@@ -16,10 +16,8 @@ package cmd
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 
 	"github.com/bketelsen/factor/factor/component"
@@ -44,16 +42,12 @@ to quickly create a Cobra application.`,
 		}
 		fmt.Println(cwd)
 		fmt.Println("dev called")
-
-		dir := filepath.Join(cwd, "components")
-		err = processComponents(dir)
+		err = ensureFactor()
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
-
-		dir = filepath.Join(cwd, "routes")
-		err = processComponents(dir)
+		err = processComponents(cwd)
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -62,26 +56,20 @@ to quickly create a Cobra application.`,
 }
 
 func processComponents(base string) error {
+	dir := filepath.Join(base, "components")
 
-	err := filepath.Walk(base, func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
-		if !info.IsDir() && isHtml(info) {
+		if !info.IsDir() {
 			f, err := os.Open(path)
 			if err != nil {
 				return err
 			}
 			c, _ := component.Parse(f, componentName(path))
-
-			comp := componentName(path)
-			gfn := filepath.Join(base, strings.ToLower(comp)+".go")
-			_, err = os.Stat(gfn)
-			if os.IsNotExist(err) {
-				c.Struct = true
-			}
 			fmt.Printf("visited file: %q\n", path)
-			gofile, err := os.Create(goFileName(base, componentName(path)))
+			gofile, err := os.Create(goFileName(componentName(path)))
 			if err != nil {
 				return err
 			}
@@ -92,27 +80,31 @@ func processComponents(base string) error {
 	})
 
 	if err != nil {
-		fmt.Printf("error walking the path %q: %v\n", base, err)
+		fmt.Printf("error walking the path %q: %v\n", dir, err)
 	}
 	return err
 }
-func isHtml(info os.FileInfo) bool {
-	return filepath.Ext(info.Name()) == ".html"
-}
-
-func goFileName(base, comp string) string {
-	return filepath.Join(base, strings.ToLower(comp)+"_generated.go")
+func goFileName(comp string) string {
+	return "factortmp/components/" + strings.ToLower(comp) + ".go"
 }
 func componentName(path string) string {
-	reg, err := regexp.Compile("[^a-zA-Z0-9]+")
-	if err != nil {
-		log.Fatal(err)
-	}
 	base := filepath.Base(path)
-	base = strings.Replace(base, filepath.Ext(path), "", -1)
-	return strings.Title(reg.ReplaceAllString(base, ""))
-}
+	return strings.Replace(base, filepath.Ext(path), "", -1)
 
+}
+func ensureFactor() error {
+
+	_, err := os.Stat("factortmp")
+	if err != nil {
+		if os.IsNotExist(err) {
+			fmt.Println("factor tmp directory does not exist, creating...")
+			return os.MkdirAll("factortmp/components", 0755)
+		} else {
+			return err
+		}
+	}
+	return nil
+}
 func init() {
 	rootCmd.AddCommand(devCmd)
 
