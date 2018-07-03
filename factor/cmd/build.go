@@ -16,6 +16,8 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 )
@@ -32,6 +34,26 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("build called")
+		cwd, err := os.Getwd()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		fmt.Println(cwd)
+
+		dir := filepath.Join(cwd, "components")
+		err = processComponents(dir)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		dir = filepath.Join(cwd, "routes")
+		err = processComponents(dir)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 	},
 }
 

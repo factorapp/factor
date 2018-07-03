@@ -1,11 +1,14 @@
 package component
 
 import (
+	"bytes"
 	"io"
 	"io/ioutil"
+	"os"
 	"strings"
 	"text/template"
 
+	"github.com/client9/csstool"
 	"github.com/pkg/errors"
 )
 
@@ -21,6 +24,7 @@ type Component struct {
 	Package  string
 	Imports  []string
 	parsed   bool
+	Struct   bool
 }
 
 func (c *Component) WriteImports() string {
@@ -32,6 +36,12 @@ func (c *Component) QuotedStyle() string {
 
 func (c *Component) QuotedTemplate() string {
 	return "`" + c.Template + "`"
+}
+
+func (c *Component) TransformStyle() {
+	b := bytes.NewBuffer([]byte(c.Style))
+	csstool.Dump(b, os.Stdout)
+
 }
 
 // Parse reads a component file like Nav.html into
