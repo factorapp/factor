@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"net/http"
 
 	"github.com/bketelsen/factor/golden/components"
 	"github.com/bketelsen/factor/markup"

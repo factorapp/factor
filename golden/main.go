@@ -14,6 +14,7 @@ func main() {
 	mux := http.NewServeMux()
 	mux.Handle("/", http.FileServer(http.Dir(".")))
 	mux.HandleFunc("/example.wasm", wasmHandler)
+	log.Printf("serving on :3000")
 	log.Fatal(http.ListenAndServe(":3000", mux))
 
 }
