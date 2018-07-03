@@ -1,0 +1,6 @@
+<!-- maybe factor can somehow "bind" the models.Todo to this html? -->
+<div>
+    <h1>{{ .Todo.Get.Name }}</h1>
+    <small>{{ .Todo.Get.Description }}</small>
+    <div>(<a href="{{ .Todo.Permalink }}">Permalink</a>)</div>
+</div>
