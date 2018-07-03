@@ -17,12 +17,12 @@ type Todo struct {
 }
 
 // Get is a convenience function that gets the current in-memory Todo
-func (t TodoBinding) Get() models.Todo {
+func (t Todo) Get() models.Todo {
 	return t.Client.GetCurrent()
 }
 
 // Permalink is a convenience function to get the permalink for this todo.
-func (t TodoBinding) Permalink() string {
+func (t Todo) Permalink() string {
 	return fmt.Sprintf("/todos/%s", t.Get().ID.String())
 }
 
