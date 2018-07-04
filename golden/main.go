@@ -2,16 +2,19 @@ package main
 
 import (
 	"log"
-
-	"github.com/bketelsen/factor/golden/components"
-	"github.com/bketelsen/factor/markup"
+	"net/http"
 )
 
-func main() {
+func wasmHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/wasm")
+	http.ServeFile(w, r, "example.wasm")
+}
 
-	c := &components.App{}
-	_, err := markup.MountBody(c)
-	if err != nil {
-		log.Fatal(err)
-	}
+func main() {
+	mux := http.NewServeMux()
+	mux.Handle("/", http.FileServer(http.Dir(".")))
+	mux.HandleFunc("/example.wasm", wasmHandler)
+	log.Printf("serving on :3000")
+	log.Fatal(http.ListenAndServe(":3000", mux))
+
 }
