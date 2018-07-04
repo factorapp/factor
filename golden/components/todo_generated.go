@@ -38,12 +38,7 @@ func (t Todo) Permalink() string {
 }
 
 func (t *Todo) Render() string {
-	tpl := template.Must(template.New("todo").Parse(TodoTemplate))
-	return tpl.Execute(
-		/*what do you put in here for the writer?*/
-		os.Stdout,
-		t,
-	)
+	return TodoTemplate
 }
 
 // NewTodo creates a new Todo with a fully populated client
