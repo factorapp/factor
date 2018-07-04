@@ -81,7 +81,7 @@ func isModel(info os.FileInfo) bool {
 	// ignore generated files
 	if 
 		strings.HasSuffix(info.Name(), "_generated.go") || 
-		strings.HasSuffic(info.Name(), "_server.go") ||
+		strings.HasSuffix(info.Name(), "_server.go") ||
 		strings.HasSuffix(info.Name(), "_types.go") ||
 		strings.HasSuffix(info.Name(), "_client.go") {
 		return false
