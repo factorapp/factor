@@ -81,7 +81,7 @@ func New{{.UpperName}}Server() {{.UpperName}}Server {
 	return &{{.UpperName}}Server{}
 }
 
-func (srv *{{.UpperName}}Server) {{.UpperName}}Server) Create(req Create{{.UpperName}}Req, res *Create{{.UpperName}}Res) error {
+func (srv *{{.UpperName}}Server) Create(req Create{{.UpperName}}Req, res *Create{{.UpperName}}Res) error {
 	// TODO
 	return nil
 }
