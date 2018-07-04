@@ -167,26 +167,22 @@ import (
 	"log"
 )
 
-var rpcCl *rpc.Client
-
-func init() {
-	client, err := rpc.DialHTTP("tcp", serverAddress + ":1234")
-	if err != nil {
-		log.Fatalf("couldn't connect to rpc! (%s)", err)
-	}
-	rpcCl = client
-}
-
 type Client struct {
 	{{range $cl := .Clients}}
 	{{$cl}}
 	{{end}}
 }
 
-var RPC *Client = &Client{
-	{{range $cl := .Clients}}
-	{{$cl}}{RPC: rpcCl},
-	{{end}}
+func NewClient(port int) (*Client, error) {
+	client, err := rpc.DialHTTP("tcp", serverAddress + ":1234")
+	if err != nil {
+		return nil, err
+	}
+	return &Client{
+		{{range $cl := .Clients}}
+		{{$cl}}{RPC: rpcCl},
+		{{end}}
+	}, nil
 }
 `)
 	if err != nil {
