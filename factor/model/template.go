@@ -164,7 +164,6 @@ func StartRPCServer(port int) error {
 
 import (
 	"net/rpc"
-	"log"
 )
 
 type Client struct {
@@ -174,13 +173,13 @@ type Client struct {
 }
 
 func NewClient(port int) (*Client, error) {
-	client, err := rpc.DialHTTP("tcp", serverAddress + ":1234")
+	client, err := rpc.DialHTTP("tcp", ":1234")
 	if err != nil {
 		return nil, err
 	}
 	return &Client{
 		{{range $cl := .Clients}}
-		{{$cl}}{RPC: rpcCl},
+		{{$cl}}{RPC: client},
 		{{end}}
 	}, nil
 }
