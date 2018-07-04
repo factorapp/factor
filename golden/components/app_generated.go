@@ -29,7 +29,6 @@ var AppStyles = `
 `
 
 func (t *App) Render() string {
-
 	loc := js.Global().Get("location")
 	u, err := parse(loc.String())
 	if err != nil {
