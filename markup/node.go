@@ -103,6 +103,7 @@ func (n *Node) transformStyle(style string) string {
 			}
 		}
 		output += string(data)
+		output += string(" ")
 	}
 
 	return output
