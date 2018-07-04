@@ -31,17 +31,12 @@ var AppStyles = `
 func (t *App) Render() string {
 
 	loc := js.Global().Get("location")
-	fmt.Println(loc)
 	u, err := parse(loc.String())
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(u.Path)
 	path := cleanPath(u.Path)
-	fmt.Println("Path:", path)
-
 	t.Page = getPage(path)
-
 	return AppTemplate
 
 }
