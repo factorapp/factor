@@ -10,6 +10,9 @@ import (
 
 var AppTemplate = `<main>
     <Nav />
+    {{ range .Todos }}
+    <Todo Name="{{.Name}}" Description="{{.Description}}" Permalink="{{.Permalink}}" />
+    {{ end }}
     <div>Brian Was Here</div>
 </main>`
 var AppStyles = `
@@ -27,6 +30,7 @@ func (t *App) Render() string {
 	tdc := new(models.TodoClient)
 	uid := uuid.Must(uuid.NewV4())
 	todo, err := tdc.Get(uid)
+	t.Todos = []*models.Todo{todo}
 
 	fmt.Println(todo, err)
 	return AppTemplate
