@@ -52,11 +52,11 @@ type Update{{.UpperName}}Res struct {
 	Err error
 }
 
-type Delete{{.UpperName}}Res struct {
+type Delete{{.UpperName}}Req struct {
 	ID uuid.UUID
 }
 
-type Delete{{.UpperName}}Res {
+type Delete{{.UpperName}}Res struct {
 	Err error
 }
 `)
@@ -115,7 +115,6 @@ func init() {
 // fill in your own client logic here!
 
 import (
-	"context"
 	"net/rpc"
 )
 
@@ -184,7 +183,7 @@ type Client struct {
 
 var RPC *Client = &Client{
 	{{range $cl := .Clients}}
-	{{$cl}}Client{RPC: rpcCl}
+	{{$cl}}{RPC: rpcCl},
 	{{end}}
 }
 `)
