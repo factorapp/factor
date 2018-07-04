@@ -55,7 +55,7 @@ func processModels(base string) error {
 	}
 
 	log.Printf("writing client file")
-	clientFd, err := os.Create(filepath.Join(base, "client.go"))
+	clientFd, err := os.Create(filepath.Join(base, "client_generated.go"))
 	if err != nil {
 		return err
 	}
@@ -64,7 +64,7 @@ func processModels(base string) error {
 	}
 
 	log.Printf("writing server file")
-	serverFd, err := os.Create(filepath.Join(base, "server.go"))
+	serverFd, err := os.Create(filepath.Join(base, "server_generated.go"))
 	if err != nil {
 		return err
 	}
