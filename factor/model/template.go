@@ -9,6 +9,7 @@ var modelTypesTpl *template.Template
 var modelServerTpl *template.Template
 var modelClientTpl *template.Template
 var serversTpl *template.Template
+var clientsTpl *template.Template
 
 func init() {
 	var err error
@@ -153,6 +154,35 @@ func StartRPCServer(port int) error {
 		return err
 	}
 	return http.Serve(l, nil)
+}
+`)
+	clientsTpl, err = template.New("clients").Parse(`package models
+
+import (
+	"net/rpc"
+	"log"
+)
+
+var rpcCl *rpc.Client
+
+func init() {
+	client, err := rpc.DialHTTP("tcp", serverAddress + ":1234")
+	if err != nil {
+		log.Fatalf("couldn't connect to rpc! (%s)", err)
+	}
+	rpcCl = client
+}
+
+type Client struct {
+	{{ $x, $cl := range .Clients }}
+	{{ $cl }}
+	{{end}}
+}
+
+var RPC *Client = &Client{
+	{{$x, $cl := range .Clients}}
+	{{$cl}}Client{RPC: rpcCl}
+	{{end}}
 }
 `)
 }

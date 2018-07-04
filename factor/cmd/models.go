@@ -53,12 +53,26 @@ func processModels(base string) error {
 	if err != nil {
 		return err
 	}
+
+	log.Printf("writing client file")
+	clientFd, err := os.Create(filepath.Join(base, "client.go"))
+	if err != nil {
+		return err
+	}
+	if err := model.WriteClientFile(clientFd); err != nil {
+		return err
+	}
+
+	log.Printf("writing server file")
 	serverFd, err := os.Create(filepath.Join(base, "server.go"))
 	if err != nil {
 		return err
 	}
+	if err := model.WriteServerFile(serverFd); err != nil {
+		return err
+	}
 	log.Printf("generated servers and clients: %s", servers)
-	return model.WriteServerFile(serverFd)
+	return nil
 }
 
 func isModel(info os.FileInfo) bool {
