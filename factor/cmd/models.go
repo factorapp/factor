@@ -21,13 +21,29 @@ func processModels(base string) error {
 			return nil
 		}
 		model := model.New(path, info)
-		toCreate := filepath.Join(base, model.GeneratedFilename())
-		log.Printf("generating model %s", toCreate)
-		fd, err := os.Create(toCreate)
+
+		typesFilename := filepath.Join(base, model.TypesFilename())
+		log.Printf("generating %s", typesFilename)
+		typesFd, err := os.Create(typesFilename)
 		if err != nil {
 			return err
 		}
-		if err := model.Write(fd); err != nil {
+
+		serverFilename := filepath.Join(base, model.ServerFilename())
+		log.Printf("generating %s", serverFilename)
+		serverFd, err := os.Create(serverFilename)
+		if err != nil {
+			return err
+		}
+
+		clientFilename := filepath.Join(base, model.ClientFilename())
+		log.Printf("generating %s", clientFilename)
+		clientFd, err := os.Create(clientFilename)
+		if err != nil {
+			return err
+		}
+
+		if err := model.Write(typesFd, clientFd, serverFd); err != nil {
 			return err
 		}
 		return nil

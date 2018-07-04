@@ -4,7 +4,6 @@ import (
 	"io"
 	"os"
 	"strings"
-	"text/template"
 
 	"github.com/bketelsen/factor/factor/files"
 )
@@ -15,15 +14,33 @@ type Model struct {
 	lowerName string
 }
 
-func (m Model) GeneratedFilename() string {
-	return m.lowerName + "_generated.go"
+func (m Model) TypesFilename() string {
+	return m.lowerName + "_types.go"
 }
 
-func (m Model) Write(out io.Writer) error {
+func (m Model) ServerFilename() string {
+	return m.lowerName + "_server.go"
+}
+
+func (m Model) ClientFilename() string {
+	return m.lowerName + "_client.go"
+}
+
+func (m Model) Write(typesW io.Writer, clientW io.Writer, serverW io.Writer) error {
 	data := map[string]interface{}{
 		"UpperName": strings.Title(m.lowerName),
+		"LowerName": m.lowerName,
 	}
-	return modelTpl.Execute(out, data)
+	if err := modelTypesTpl.Execute(typesW, data); err != nil {
+		return err
+	}
+	if err := modelServerTpl.Execute(serverW, data); err != nil {
+		return err
+	}
+	if err := modelClientTpl.Execute(clientW, data); err != nil {
+		return err
+	}
+	return nil
 }
 
 func New(fullPath string, info os.FileInfo) Model {
@@ -32,24 +49,3 @@ func New(fullPath string, info os.FileInfo) Model {
 		lowerName: strings.ToLower(files.SanitizedName(info.Name())),
 	}
 }
-
-var modelTpl = template.Must(template.New("model").Parse(`package models
-
-import (
-	"context"
-)
-
-type {{.UpperName}}Client struct{}
-
-func New{{.UpperName}}Client() {{.UpperName}}Client {
-	return &{{.UpperName}}Client{}
-}
-
-type New{{.UpperName}} struct {
-	Ctx context.Context
-	Data {{.UpperName}}
-}
-
-type {{.UpperName}}Resp struct {
-	Err error
-}`))
