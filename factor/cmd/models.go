@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -20,7 +21,9 @@ func processModels(base string) error {
 			return nil
 		}
 		model := model.New(path, info)
-		fd, err := os.Create(model.GeneratedFilename())
+		toCreate := filepath.Join(base, model.GeneratedFilename())
+		log.Printf("generating model %s", toCreate)
+		fd, err := os.Create(toCreate)
 		if err != nil {
 			return err
 		}
