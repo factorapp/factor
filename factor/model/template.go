@@ -156,6 +156,9 @@ func StartRPCServer(port int) error {
 	return http.Serve(l, nil)
 }
 `)
+	if err != nil {
+		log.Fatalf("parsing servers file: %s", err)
+	}
 	clientsTpl, err = template.New("clients").Parse(`package models
 
 import (
@@ -174,15 +177,19 @@ func init() {
 }
 
 type Client struct {
-	{{ $x, $cl := range .Clients }}
-	{{ $cl }}
+	{{range $cl := .Clients}}
+	{{$cl}}
 	{{end}}
 }
 
 var RPC *Client = &Client{
-	{{$x, $cl := range .Clients}}
+	{{range $cl := .Clients}}
 	{{$cl}}Client{RPC: rpcCl}
 	{{end}}
 }
 `)
+	if err != nil {
+		log.Fatalf("parsing clients file: %s", err)
+	}
+
 }
