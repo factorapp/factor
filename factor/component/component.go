@@ -4,11 +4,14 @@ import (
 	"bytes"
 	"io"
 	"io/ioutil"
-	"os"
+	"math/rand"
 	"strings"
 	"text/template"
+	"time"
 
-	"github.com/client9/csstool"
+	"github.com/tdewolff/parse"
+	"github.com/tdewolff/parse/css"
+
 	"github.com/pkg/errors"
 )
 
@@ -25,6 +28,7 @@ type Component struct {
 	Imports  []string
 	parsed   bool
 	Struct   bool
+	UniqueID string
 }
 
 func (c *Component) WriteImports() string {
@@ -39,8 +43,45 @@ func (c *Component) QuotedTemplate() string {
 }
 
 func (c *Component) TransformStyle() {
-	b := bytes.NewBuffer([]byte(c.Style))
-	csstool.Dump(b, os.Stdout)
+	p := css.NewParser(bytes.NewBufferString(c.Style), false)
+
+	output := ""
+	for {
+		grammar, _, data := p.Next()
+		data = parse.Copy(data)
+		if grammar == css.ErrorGrammar {
+			if err := p.Err(); err != io.EOF {
+				for _, val := range p.Values() {
+					data = append(data, val.Data...)
+				}
+				if perr, ok := err.(*parse.Error); ok && perr.Message == "unexpected token in declaration" {
+					data = append(data, ";"...)
+				}
+			} else {
+				break
+			}
+		} else if grammar == css.AtRuleGrammar || grammar == css.BeginAtRuleGrammar || grammar == css.QualifiedRuleGrammar || grammar == css.BeginRulesetGrammar || grammar == css.DeclarationGrammar || grammar == css.CustomPropertyGrammar {
+			if grammar == css.DeclarationGrammar || grammar == css.CustomPropertyGrammar {
+				data = append(data, ":"...)
+			}
+			for _, val := range p.Values() {
+				data = append(data, val.Data...)
+			}
+			if grammar == css.BeginAtRuleGrammar || grammar == css.BeginRulesetGrammar {
+
+				data = append(data, "."...)
+				data = append(data, c.UniqueID...)
+				data = append(data, "{"...)
+			} else if grammar == css.AtRuleGrammar || grammar == css.DeclarationGrammar || grammar == css.CustomPropertyGrammar {
+				data = append(data, ";"...)
+			} else if grammar == css.QualifiedRuleGrammar {
+				data = append(data, ","...)
+			}
+		}
+		output += string(data)
+	}
+
+	c.Style = output
 
 }
 
@@ -72,6 +113,7 @@ func Parse(r io.Reader, name string) (*Component, error) {
 		Name:     name,
 		Template: template,
 		Style:    style,
+		UniqueID: randSeq(10),
 		parsed:   true,
 	}
 	return c, err
@@ -94,4 +136,17 @@ func removeStyleTags(s string) string {
 	s = strings.Replace(s, "<style>", "", -1)
 	s = strings.Replace(s, "</style>", "", -1)
 	return s
+}
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
+
+var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+func randSeq(n int) string {
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
 }
