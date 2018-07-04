@@ -2,6 +2,9 @@ package components
 
 import (
 	"fmt"
+	"net/url"
+	"strings"
+	"syscall/js"
 
 	"github.com/bketelsen/factor/golden/models"
 	"github.com/bketelsen/factor/markup"
@@ -9,7 +12,9 @@ import (
 )
 
 var AppTemplate = `<main>
-    <Nav />
+	<Nav />
+	
+	{{ .Page }}
     {{ range .Todos }}
     <Todo Name="{{.Name}}" Description="{{.Description}}" Permalink="{{.Permalink}}" />
     {{ end }}
@@ -27,15 +32,41 @@ var AppStyles = `
 `
 
 func (t *App) Render() string {
-	tdc := new(models.TodoClient)
-	uid := uuid.Must(uuid.NewV4())
-	todo, err := tdc.Get(uid)
-	t.Todos = []*models.Todo{todo}
 
-	fmt.Println(todo, err)
-	return AppTemplate
+	loc := js.Global().Get("location")
+	fmt.Println(loc)
+	u, err := parse(loc.String())
+	if err != nil {
+		panic(err)
+	}
+	path := cleanPath(u.Path)
+	fmt.Println("Path:", path)
+	switch cleanPath(path) {
+	case "blue":
+		t.Page = "<Index />"
+		return AppTemplate
+	default:
+
+		t.Page = ""
+		tdc := new(models.TodoClient)
+		uid := uuid.Must(uuid.NewV4())
+		todo, err := tdc.Get(uid)
+		t.Todos = []*models.Todo{todo}
+
+		fmt.Println(todo, err)
+		return AppTemplate
+
+	}
 }
 
 func init() {
 	markup.Register(&App{})
+}
+
+func parse(location string) (*url.URL, error) {
+	return url.Parse(location)
+}
+
+func cleanPath(path string) string {
+	return strings.Replace(path, "/", "", -1)
 }

@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset='utf-8'>
+	<meta name='viewport' content='width=device-width'>
+	<meta name='theme-color' content='#aa1e1e'> %factor.base%
+
+	<link rel='stylesheet' href='global.css'>
+	<link rel='manifest' href='manifest.json'>
+	<link rel='icon' type='image/png' href='favicon.png'>
+
+	<!-- Factor generates a <style> tag containing critical CSS
+	     for the current page. CSS for the rest of the app is
+	     lazily loaded when it precaches secondary pages -->
+<!--	%factor.styles% -->
+
+	<!-- This contains the contents of the <factor:head> component, if
+	     the current page has one -->
+	<!-- %factor.head% -->
+</head>
+
+<body>
+	<div id="main">Please wait...</div>
+	<!-- The application will be rendered inside this element,
+		 because `app/client.js` references it -->
+	<!-- Factor creates a <script> tag containing `app/client.js`
+	     and anything else it needs to hydrate the app and
+		 initialize the router -->
+	<script src="wasm_exec.js"></script>
+	<script>
+		if (!WebAssembly.instantiateStreaming) { // polyfill
+			WebAssembly.instantiateStreaming = async (resp, importObject) => {
+				const source = await (await resp).arrayBuffer();
+				return await WebAssembly.instantiate(source, importObject);
+			};
+		}
+
+		const go = new Go();
+		let mod, inst;
+		WebAssembly.instantiateStreaming(fetch("/app/example.wasm"), go.importObject).then((result) => {
+			mod = result.module;
+			inst = result.instance;
+			run();
+		});
+
+		async function run() {
+			await go.run(inst);
+			inst = await WebAssembly.instantiate(mod, go.importObject); // reset instance
+		}
+	</script> 
+	<!-- %factor.scripts% -->
+</body>
+
+</html>

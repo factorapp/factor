@@ -2,6 +2,7 @@ package components
 
 import (
 	"github.com/bketelsen/factor/markup"
+	"github.com/satori/go.uuid"
 )
 
 type Todo struct {

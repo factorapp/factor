@@ -1,6 +1,7 @@
 package markup
 
 import (
+	"fmt"
 	"reflect"
 	"syscall/js"
 
@@ -55,7 +56,6 @@ func Register(c Componer) {
 	if !isComponentTag(tag) {
 		log.Panic(errors.Errorf("non exported components cannot be registered: %v", t))
 	}
-
 	compoBuilders[tag] = func() Componer {
 		v := reflect.New(t)
 		return v.Interface().(Componer)
@@ -73,6 +73,9 @@ func Registered(c Componer) bool {
 
 // Root returns the root node of c. Panic if c is not mounted.
 func Root(c Componer) *Node {
+	for _, cc := range components {
+		fmt.Println(cc)
+	}
 	compo, mounted := components[c]
 	if !mounted {
 		log.Panic(errors.Errorf("%T is not mounted", c))
@@ -113,7 +116,10 @@ func Markup(c Componer) string {
 
 // MountBody mounts the component in the <body> tag
 func MountBody(c Componer) (root *Node, err error) {
+	fmt.Println("MOUNT BODY")
 	ctx := uuid.Must(uuid.NewV1())
+
+	fmt.Println("Call MOUNT")
 	node, err := Mount(c, ctx)
 	el := js.Global().Get("document").Call("getElementsByTagName", "BODY").Index(0)
 	el.Set("innerHTML", node.Markup())
@@ -133,13 +139,16 @@ func Mount(c Componer, ctx uuid.UUID) (root *Node, err error) {
 		err = errors.Errorf("%T is not registered", c)
 		return
 	}
-
+	fmt.Println("Checking to see if component is mounted")
 	if compo, mounted := components[c]; mounted {
 		// Go uses the same reference for different instances of a same empty struct.
 		// This prevents from mounting a same empty struct.
+
+		fmt.Println("Checking to see if component t has no fields")
 		if t := reflect.TypeOf(c).Elem(); t.NumField() == 0 {
 			compo.Count++
 			root = compo.Root
+			fmt.Println("Returning early because already registered")
 			return
 		}
 
@@ -147,12 +156,14 @@ func Mount(c Componer, ctx uuid.UUID) (root *Node, err error) {
 		return
 	}
 
+	fmt.Println("rendering c")
 	r, err := render(c)
 	if err != nil {
 		err = errors.Errorf("unable to render %T: %v\n%v", c, err, c.Render())
 		return
 	}
 
+	fmt.Println("string to node ")
 	if root, err = stringToNode(r); err != nil {
 		err = errors.Errorf("%T markup returned by Render() has a %v\n%v", c, err, r)
 		return
@@ -166,7 +177,7 @@ func Mount(c Componer, ctx uuid.UUID) (root *Node, err error) {
 	if err = mountNode(root, c, ctx); err != nil {
 		return
 	}
-
+	fmt.Println("registering in the map")
 	components[c] = &component{
 		Count: 1,
 		Root:  root,

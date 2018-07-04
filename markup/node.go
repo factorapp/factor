@@ -65,8 +65,10 @@ func (n *Node) Markup() string {
 }
 
 func (n *Node) markup(indent int) string {
+	fmt.Println("Node", n)
 	b := &bytes.Buffer{}
 	indt := indentation(indent)
+	fmt.Println("indent", indent)
 	if n.Type == TextNode {
 		b.WriteString(indt)
 		b.WriteString(html.EscapeString(n.Text))

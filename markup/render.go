@@ -3,6 +3,7 @@ package markup
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"text/template"
 	"time"
 )
@@ -30,11 +31,16 @@ func render(c Componer) (rendered string, err error) {
 	fnmap["json"] = convertToJSON
 	fnmap["time"] = formatTime
 
+	fmt.Println("Template MUST")
+	fmt.Println(c.Render())
 	tmpl := template.Must(template.New("Render").Funcs(fnmap).Parse(c.Render()))
+
+	fmt.Println("Template DID")
 	if err = tmpl.Execute(&b, c); err != nil {
+		fmt.Println("Render Error", err)
 		return
 	}
-
+	fmt.Println(b.String())
 	rendered = b.String()
 	return
 }

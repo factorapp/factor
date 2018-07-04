@@ -1,18 +1,15 @@
-
-package components
+package routes
 
 import (
-	
 	"github.com/bketelsen/factor/markup"
 )
 
 type Error struct {
-
 }
 
-var ErrorTemplate =  `<h1>status</h1>
+var ErrorTemplate = `<h1>status</h1>
 
-<p>error.message</p>` 
+<p>error.message</p>`
 var ErrorStyles = `
 	h1,
 	p {
@@ -35,7 +32,6 @@ var ErrorStyles = `
 		}
 	}
 `
-
 
 func (t *Error) Render() string {
 	return ErrorTemplate

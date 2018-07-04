@@ -25,6 +25,7 @@ func (srv *TodoServer) Get(r *http.Request, req *GetTodoReq, res *GetTodoRes) er
 		ID:          req.ID,
 		Name:        "Todo Name",
 		Description: "Todo Description",
+		Permalink:   "/todos/" + req.ID.String(),
 	}
 	return nil
 }
