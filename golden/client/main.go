@@ -6,7 +6,7 @@ import (
 	"log"
 
 	"github.com/bketelsen/factor/golden/components"
-
+	_ "github.com/bketelsen/factor/golden/routes"
 	"github.com/bketelsen/factor/markup"
 )
 

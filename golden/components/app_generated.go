@@ -7,20 +7,15 @@ import (
 	"syscall/js"
 
 	// need the components registered
-	"github.com/bketelsen/factor/golden/models"
-	_ "github.com/bketelsen/factor/golden/routes"
+
 	"github.com/bketelsen/factor/markup"
-	"github.com/satori/go.uuid"
 )
 
 var AppTemplate = `<main>
 	<Nav />
 	
 	{{ .Page }}
-    {{ range .Todos }}
-    <Todo Name="{{.Name}}" Description="{{.Description}}" Permalink="{{.Permalink}}" />
-    {{ end }}
-    <div>Brian Was Here</div>
+
 </main>`
 var AppStyles = `
     main {
@@ -44,24 +39,20 @@ func (t *App) Render() string {
 	fmt.Println(u.Path)
 	path := cleanPath(u.Path)
 	fmt.Println("Path:", path)
-	switch cleanPath(path) {
-	case "blue":
-		t.Page = "<Index />"
-		return AppTemplate
-	default:
 
-		t.Page = ""
-		tdc := new(models.TodoClient)
-		uid := uuid.Must(uuid.NewV4())
-		todo, err := tdc.Get(uid)
-		t.Todos = []*models.Todo{todo}
+	t.Page = getPage(path)
 
-		fmt.Println(todo, err)
-		return AppTemplate
+	return AppTemplate
 
-	}
 }
 
+// should return a tag
+func getPage(path string) string {
+	if path == "/" {
+		return ""
+	}
+	return fmt.Sprintf("<%s />", strings.Title(path))
+}
 func init() {
 	markup.Register(&App{})
 }
