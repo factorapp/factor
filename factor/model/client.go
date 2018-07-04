@@ -6,6 +6,6 @@ import (
 
 func WriteClientFile(wr io.Writer, names []string) error {
 	return clientsTpl.Execute(wr, map[string]interface{}{
-		"Client": names,
+		"Clients": names,
 	})
 }
