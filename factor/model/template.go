@@ -116,6 +116,8 @@ func init() {
 
 import (
 	"net/rpc"
+
+	"github.com/satori/go.uuid"
 )
 
 type {{.UpperName}}Client struct{
@@ -128,7 +130,7 @@ func (cl *{{.UpperName}}Client) Get(id uuid.UUID) (*{{.UpperName}}, error) {
 	if err := cl.RPC.Call("{{.UpperName}}.Get", req, &res); err != nil {
 		return nil, err
 	}
-	return res.Data, nil
+	return &res.Data, nil
 }
 
 // TODO: more
