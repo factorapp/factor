@@ -77,7 +77,7 @@ var {{.LowerName}}Server = New{{.UpperName}}Server()
 
 type {{.UpperName}}Server struct{}
 
-func New{{.UpperName}}Server() {{.UpperName}}Server {
+func New{{.UpperName}}Server() *{{.UpperName}}Server {
 	return &{{.UpperName}}Server{}
 }
 
