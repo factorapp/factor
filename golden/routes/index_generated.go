@@ -1,4 +1,4 @@
-package components
+package routes
 
 import (
 	"github.com/bketelsen/factor/markup"

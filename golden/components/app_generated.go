@@ -6,7 +6,9 @@ import (
 	"strings"
 	"syscall/js"
 
+	// need the components registered
 	"github.com/bketelsen/factor/golden/models"
+	_ "github.com/bketelsen/factor/golden/routes"
 	"github.com/bketelsen/factor/markup"
 	"github.com/satori/go.uuid"
 )
@@ -39,6 +41,7 @@ func (t *App) Render() string {
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println(u.Path)
 	path := cleanPath(u.Path)
 	fmt.Println("Path:", path)
 	switch cleanPath(path) {
