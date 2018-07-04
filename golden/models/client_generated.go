@@ -4,7 +4,7 @@ type Client struct {
 	TodoClient
 }
 
-func NewClient(port int) (*Client, error) {
+func NewClient() (*Client, error) {
 	return &Client{
 
 		TodoClient{},

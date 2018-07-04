@@ -5,6 +5,7 @@ import (
 )
 
 type Todo struct {
+	ID          uuid.UUID
 	Name        string
 	Description string
 	Permalink   string

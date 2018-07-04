@@ -5,7 +5,6 @@ package models
 
 import (
 	"bytes"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -25,30 +24,26 @@ func (cl *TodoClient) Get(id uuid.UUID) (*Todo, error) {
 	}
 	message, err := json.EncodeClientRequest("TodoServer.Get", args)
 
-	//message, err := json.EncodeClientRequest("TodoServer.Get", nil)
 	if err != nil {
 		log.Fatalf("%s", err)
 	}
-	fmt.Println(string(message))
-	//req, err := http.NewRequest("POST", url, nil)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(message))
 	if err != nil {
-		log.Fatalf("%s", err)
+		return nil, err
 	}
 	req.Header.Set("Content-Type", "application/json")
 	client := http.DefaultClient
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatalf("Error in sending request to %s. %s", url, err)
+		return nil, err
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
-	fmt.Println(string(body), err)
 	var result GetTodoRes
 	bb := bytes.NewBuffer(body)
 	err = json.DecodeClientResponse(bb, &result)
 	if err != nil {
-		log.Fatalf("Couldn't decode response. %s", err)
+		return nil, err
 	}
 	return &result.Data, err
 }
