@@ -79,7 +79,11 @@ func processModels(base string) error {
 
 func isModel(info os.FileInfo) bool {
 	// ignore generated files
-	if strings.HasSuffix(info.Name(), "_generated.go") {
+	if 
+		strings.HasSuffix(info.Name(), "_generated.go") || 
+		strings.HasSuffic(info.Name(), "_server.go") ||
+		strings.HasSuffix(info.Name(), "_types.go") ||
+		strings.HasSuffix(info.Name(), "_client.go") {
 		return false
 	}
 	// assume all other go files are models
