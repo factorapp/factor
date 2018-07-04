@@ -123,6 +123,7 @@ func MountBody(c Componer) (root *Node, err error) {
 	node, err := Mount(c, ctx)
 	el := js.Global().Get("document").Call("getElementsByTagName", "BODY").Index(0)
 	el.Set("innerHTML", node.Markup())
+	//node.Element = el
 	return node, err
 }
 
@@ -130,11 +131,13 @@ func MountBody(c Componer) (root *Node, err error) {
 func MountAtElement(c Componer, ctx uuid.UUID, el js.Value) (root *Node, err error) {
 	node, err := Mount(c, ctx)
 	el.Set("innerHTML", node.Markup())
+	//node.Element = el
 	return node, err
 }
 
 // Mount retains a component and its underlying nodes.
 func Mount(c Componer, ctx uuid.UUID) (root *Node, err error) {
+	fmt.Println("In MOUNT")
 	if !Registered(c) {
 		err = errors.Errorf("%T is not registered", c)
 		return

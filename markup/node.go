@@ -6,6 +6,7 @@ import (
 	"html"
 	"net/url"
 	"strings"
+	"syscall/js"
 
 	"github.com/murlokswarm/log"
 	"github.com/satori/go.uuid"
@@ -48,6 +49,7 @@ type Node struct {
 	Mount          Componer
 	Parent         *Node
 	Children       []*Node
+	Element        js.Value
 	eventListeners []*EventListener
 }
 

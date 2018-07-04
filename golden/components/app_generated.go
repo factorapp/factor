@@ -46,6 +46,9 @@ func getPage(path string) string {
 	if path == "/" {
 		return ""
 	}
+	if path == "" {
+		path = "index"
+	}
 	return fmt.Sprintf("<%s />", strings.Title(path))
 }
 func init() {
