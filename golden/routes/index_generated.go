@@ -57,6 +57,9 @@ var IndexStyles = `
 func (t *Index) Render() string {
 	return IndexTemplate
 }
+func (t *Index) Style() string {
+	return IndexStyles
+}
 
 func init() {
 	markup.Register(&Index{})

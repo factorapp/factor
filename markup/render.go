@@ -19,6 +19,7 @@ type TemplateFuncMapper interface {
 }
 
 func render(c Componer) (rendered string, err error) {
+
 	var b bytes.Buffer
 
 	fnmap := template.FuncMap{}

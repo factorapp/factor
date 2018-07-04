@@ -23,7 +23,9 @@ var TodoStyles = ``
 func (t *Todo) Render() string {
 	return TodoTemplate
 }
-
+func (t *Todo) Style() string {
+	return TodoStyles
+}
 func init() {
 	markup.Register(&Todo{})
 }

@@ -36,7 +36,9 @@ var ErrorStyles = `
 func (t *Error) Render() string {
 	return ErrorTemplate
 }
-
+func (t *Error) Style() string {
+	return ErrorStyles
+}
 func init() {
 	markup.Register(&Error{})
 }

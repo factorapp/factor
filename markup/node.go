@@ -4,10 +4,13 @@ import (
 	"bytes"
 	"fmt"
 	"html"
+	"io"
 	"strings"
 	"syscall/js"
 
 	"github.com/satori/go.uuid"
+	"github.com/tdewolff/parse"
+	"github.com/tdewolff/parse/css"
 )
 
 // Enumeration of the node types.
@@ -63,7 +66,47 @@ func (n *Node) String() string {
 func (n *Node) Markup() string {
 	return n.markup(0)
 }
+func (n *Node) transformStyle(style string) string {
+	p := css.NewParser(bytes.NewBufferString(style), false)
 
+	output := ""
+	for {
+		grammar, _, data := p.Next()
+		data = parse.Copy(data)
+		if grammar == css.ErrorGrammar {
+			if err := p.Err(); err != io.EOF {
+				for _, val := range p.Values() {
+					data = append(data, val.Data...)
+				}
+				if perr, ok := err.(*parse.Error); ok && perr.Message == "unexpected token in declaration" {
+					data = append(data, ";"...)
+				}
+			} else {
+				break
+			}
+		} else if grammar == css.AtRuleGrammar || grammar == css.BeginAtRuleGrammar || grammar == css.QualifiedRuleGrammar || grammar == css.BeginRulesetGrammar || grammar == css.DeclarationGrammar || grammar == css.CustomPropertyGrammar {
+			if grammar == css.DeclarationGrammar || grammar == css.CustomPropertyGrammar {
+				data = append(data, ":"...)
+			}
+			for _, val := range p.Values() {
+				data = append(data, val.Data...)
+			}
+			if grammar == css.BeginAtRuleGrammar || grammar == css.BeginRulesetGrammar {
+
+				data = append(data, "."...)
+				data = append(data, n.ID.String()...)
+				data = append(data, "{"...)
+			} else if grammar == css.AtRuleGrammar || grammar == css.DeclarationGrammar || grammar == css.CustomPropertyGrammar {
+				data = append(data, ";"...)
+			} else if grammar == css.QualifiedRuleGrammar {
+				data = append(data, ","...)
+			}
+		}
+		output += string(data)
+	}
+
+	return output
+}
 func (n *Node) markup(indent int) string {
 	fmt.Println("Node", n)
 	b := &bytes.Buffer{}
@@ -93,6 +136,10 @@ func (n *Node) markup(indent int) string {
 	b.WriteString(n.Tag)
 	b.WriteRune(' ')
 	b.WriteString(`id="`)
+	b.WriteString(n.ID.String())
+	b.WriteRune('"')
+	b.WriteRune(' ')
+	b.WriteString(`class="`)
 	b.WriteString(n.ID.String())
 	b.WriteRune('"')
 	for name, value := range n.Attributes {

@@ -57,6 +57,9 @@ var NavStyles = `
     }
 `
 
+func (t *Nav) Style() string {
+	return NavStyles
+}
 func (t *Nav) Render() string {
 	return NavTemplate
 }

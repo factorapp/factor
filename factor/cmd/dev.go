@@ -93,8 +93,8 @@ func processComponents(base string) error {
 				return err
 			}
 			defer gofile.Close()
+
 			c.Transform(gofile)
-			c.TransformStyle()
 		}
 		return nil
 	})

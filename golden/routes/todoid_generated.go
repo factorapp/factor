@@ -15,7 +15,9 @@ var TodoidStyles = ``
 func (t *Todoid) Render() string {
 	return TodoidTemplate
 }
-
+func (t *Todoid) Style() string {
+	return TodoidStyles
+}
 func init() {
 	markup.Register(&Todoid{})
 }

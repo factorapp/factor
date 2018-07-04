@@ -29,6 +29,9 @@ func (t *Todos) Render() string {
 	t.List = []*models.Todo{todo}
 	return TodosTemplate
 }
+func (t *Todos) Style() string {
+	return TodosStyles
+}
 
 func init() {
 	markup.Register(&Todos{})

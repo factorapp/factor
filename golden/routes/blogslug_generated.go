@@ -15,6 +15,9 @@ var BlogslugStyles = ``
 func (t *Blogslug) Render() string {
 	return BlogslugTemplate
 }
+func (t *Blogslug) Style() string {
+	return BlogslugStyles
+}
 
 func init() {
 	markup.Register(&Blogslug{})

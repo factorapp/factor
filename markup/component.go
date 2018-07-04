@@ -14,6 +14,7 @@ var (
 	compoBuilders = map[string]func() Componer{}
 	components    = map[Componer]*component{}
 	nodes         = map[uuid.UUID]*Node{}
+	styles        = map[Componer]string{}
 )
 
 // Componer is the interface that describes a component.
@@ -22,6 +23,7 @@ type Componer interface {
 	// The markup can be a template string following the text/template standard
 	// package rules.
 	Render() string
+	Style() string
 }
 
 // Mounter is the interface that wraps OnMount method.
@@ -39,6 +41,17 @@ type Dismounter interface {
 type component struct {
 	Count int
 	Root  *Node
+}
+
+func Styles() string {
+	out := ""
+	for i, style := range styles {
+		fmt.Println("I:", i, style)
+		out += "\n"
+		out += style
+	}
+
+	return out
 }
 
 // Register registers a component. Allows the component to be dynamically
@@ -124,6 +137,10 @@ func MountBody(c Componer) (root *Node, err error) {
 	el := js.Global().Get("document").Call("getElementsByTagName", "BODY").Index(0)
 	el.Set("innerHTML", node.Markup())
 	//node.Element = el
+	sty := js.Global().Get("document").Call("createElement", "style")
+	sty.Set("id", node.ID.String())
+	sty.Set("textContent", Styles())
+	js.Global().Get("document").Get("head").Call("appendChild", sty)
 	return node, err
 }
 
@@ -185,6 +202,7 @@ func Mount(c Componer, ctx uuid.UUID) (root *Node, err error) {
 		Count: 1,
 		Root:  root,
 	}
+	styles[c] = root.transformStyle(c.Style())
 	//t := reflect.TypeOf(c)
 	//registerCallback(t)
 	if mounter, isMounter := c.(Mounter); isMounter {

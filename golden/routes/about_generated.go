@@ -15,7 +15,9 @@ var AboutStyles = ``
 func (t *About) Render() string {
 	return AboutTemplate
 }
-
+func (t *About) Style() string {
+	return AboutStyles
+}
 func init() {
 	markup.Register(&About{})
 }

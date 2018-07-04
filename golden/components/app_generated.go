@@ -28,6 +28,14 @@ var AppStyles = `
     }
 `
 
+func (t *App) OnMount() {
+	fmt.Println("I MOUNTED DUDE")
+}
+
+func (t *App) Style() string {
+	return AppStyles
+}
+
 func (t *App) Render() string {
 	loc := js.Global().Get("location")
 	u, err := parse(loc.String())
