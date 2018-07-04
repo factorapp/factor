@@ -4,6 +4,8 @@ import (
 	"io"
 )
 
-func WriteClientFile(wr io.Writer) error {
-	return clientsTpl.Execute(wr, nil)
+func WriteClientFile(wr io.Writer, names []string) error {
+	return clientsTpl.Execute(wr, map[string]interface{}{
+		"Client": names,
+	})
 }

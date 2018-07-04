@@ -11,6 +11,7 @@ import (
 
 func processModels(base string) error {
 	servers := []string{}
+	clients := []string{}
 	err := filepath.Walk(base, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -48,6 +49,7 @@ func processModels(base string) error {
 			return err
 		}
 		servers = append(servers, model.ServerName())
+		clients = append(clients, model.ClientName())
 		return nil
 	})
 	if err != nil {
@@ -59,7 +61,7 @@ func processModels(base string) error {
 	if err != nil {
 		return err
 	}
-	if err := model.WriteClientFile(clientFd); err != nil {
+	if err := model.WriteClientFile(clientFd, clients); err != nil {
 		return err
 	}
 
