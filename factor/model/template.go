@@ -1,10 +1,17 @@
 package model
 
 import (
+	"log"
 	"text/template"
 )
 
-var modelTypesTpl = template.Must(template.New("modelTypes").Parse(`package models
+var modelTypesTpl *template.Template
+var modelServerTpl *template.Template
+var modelClientTpl *template.Template
+
+func init() {
+	var err error
+	modelTypesTpl, err = template.New("modelTypes").Parse(`package models
 
 import (
 	"context"
@@ -44,15 +51,18 @@ type Delete{{.UpperName}}Res struct {
 
 type Delete{{.UpperName}}Res {
 	Err error
-}`))
+}
+`)
+	if err != nil {
+		log.Fatalf("parsing types template: %s", err)
+	}
 
-var modelServerTpl = template.Must(template.New("model").Parse(`package models
+	modelServerTpl, err = template.New("modelServer").Parse(`package models
 
 import (
 	"net/rpc"
 )
 
-{{define "server"}}{{.UpperName}}Server
 var {{.LowerName}}Server = New{{.UpperName}}Server()
 
 type {{.UpperName}}Server struct{}
@@ -84,9 +94,12 @@ func (srv *{{.UpperName}}Server) Delete(req Delete{{.UpperName}}Req, res *Delete
 func init() {
 	rpc.RegisterName("{{.UpperName}}", {{.LowerName}}Server)
 }
-`))
+`)
+	if err != nil {
+		log.Fatalf("parsing server template: %s", err)
+	}
 
-var modelClientTpl = template.Must(template.New("model").Parse(`package models
+	modelClientTpl, err = template.New("modelClient").Parse(`package models
 
 import (
 	"context"
@@ -107,4 +120,8 @@ func (cl *{{.UpperName}}Client) Get(id uuid.UUID) (*{{.UpperName}}, error) {
 }
 
 // TODO: more
-`))
+`)
+	if err != nil {
+		log.Fatalf("parsing client template: %s", err)
+	}
+}
