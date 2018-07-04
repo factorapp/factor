@@ -4,11 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	"html"
-	"net/url"
 	"strings"
 	"syscall/js"
 
-	"github.com/murlokswarm/log"
 	"github.com/satori/go.uuid"
 )
 
@@ -111,23 +109,24 @@ func (n *Node) markup(indent int) string {
 			continue
 		}
 
-		if name == "href" {
-			URL, err := url.Parse(value)
-			if err != nil {
-				log.Errorf("invalid url: %s", value)
+		/*	if name == "href" {
+				URL, err := url.Parse(value)
+				if err != nil {
+					log.Errorf("invalid url: %s", value)
+					continue
+				}
+
+				if len(URL.Scheme) == 0 {
+					URL.Scheme = "component"
+				}
+
+				b.WriteString(name)
+				b.WriteString(`="`)
+				b.WriteString(URL.String())
+				b.WriteRune('"')
 				continue
 			}
-
-			if len(URL.Scheme) == 0 {
-				URL.Scheme = "component"
-			}
-
-			b.WriteString(name)
-			b.WriteString(`="`)
-			b.WriteString(URL.String())
-			b.WriteRune('"')
-			continue
-		}
+		*/
 
 		b.WriteString(name)
 		b.WriteString(`="`)

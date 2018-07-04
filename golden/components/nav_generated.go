@@ -1,19 +1,16 @@
-
 package components
 
 import (
-	
 	"github.com/bketelsen/factor/markup"
 )
 
-
-
-var NavTemplate =  `<nav>
+var NavTemplate = `<nav>
     <ul>
-        <li>This is an item</li>
-        <li>This is another item</li>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/todos">Todos</a></li>
     </ul>
-</nav>` 
+</nav>`
 var NavStyles = `
     nav {
         border-bottom: 1px solid rgba(170, 30, 30, 0.1);
@@ -59,7 +56,6 @@ var NavStyles = `
         display: block;
     }
 `
-
 
 func (t *Nav) Render() string {
 	return NavTemplate
