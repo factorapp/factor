@@ -60,7 +60,7 @@ to quickly create a Cobra application.`,
 		}
 
 		dir = filepath.Join(cwd, "models")
-		err = processComponents(dir)
+		err = processModels(dir)
 		if err != nil {
 			fmt.Println(err)
 			return
