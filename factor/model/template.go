@@ -154,7 +154,7 @@ func StartRPCServer(port int) error {
 	if err != nil {
 		return err
 	}
-	return http.Serve(l, nil)
+	return http.Serve(listener, nil)
 }
 `)
 	if err != nil {
