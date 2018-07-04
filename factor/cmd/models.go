@@ -10,7 +10,8 @@ import (
 )
 
 func processModels(base string) error {
-	return filepath.Walk(base, func(path string, info os.FileInfo, err error) error {
+	servers := []string{}
+	err := filepath.Walk(base, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -46,8 +47,18 @@ func processModels(base string) error {
 		if err := model.Write(typesFd, clientFd, serverFd); err != nil {
 			return err
 		}
+		servers = append(servers, model.ServerName())
 		return nil
 	})
+	if err != nil {
+		return err
+	}
+	serverFd, err := os.Create(filepath.Join(base, "server.go"))
+	if err != nil {
+		return err
+	}
+	log.Printf("generated servers and clients: %s", servers)
+	return model.WriteServerFile(serverFd)
 }
 
 func isModel(info os.FileInfo) bool {

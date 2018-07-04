@@ -8,6 +8,7 @@ import (
 var modelTypesTpl *template.Template
 var modelServerTpl *template.Template
 var modelClientTpl *template.Template
+var serversTpl *template.Template
 
 func init() {
 	var err error
@@ -124,4 +125,23 @@ func (cl *{{.UpperName}}Client) Get(id uuid.UUID) (*{{.UpperName}}, error) {
 	if err != nil {
 		log.Fatalf("parsing client template: %s", err)
 	}
+
+	serversTpl, err = template.New("servers").Parse(`package models
+
+import (
+	"net/rpc"
+	"net"
+	"fmt"
+	"net/http"
+)
+
+func StartRPCServer(port int) error {
+	rpc.HandleHTTP()
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+	if err != nil {
+		return err
+	}
+	return http.Serve(l, nil)
+}
+`)
 }

@@ -14,6 +14,10 @@ type Model struct {
 	lowerName string
 }
 
+func (m Model) ServerName() string {
+	return strings.Title(m.lowerName) + "Server"
+}
+
 func (m Model) TypesFilename() string {
 	return m.lowerName + "_types.go"
 }
