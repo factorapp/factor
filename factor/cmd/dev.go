@@ -45,26 +45,13 @@ to quickly create a Cobra application.`,
 		fmt.Println(cwd)
 		fmt.Println("dev called")
 
-		dir := filepath.Join(cwd, "components")
-		err = processComponents(dir)
+		// build first
+		err = build()
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 
-		dir = filepath.Join(cwd, "routes")
-		err = processComponents(dir)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-
-		dir = filepath.Join(cwd, "models")
-		err = processModels(dir)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
 	},
 }
 

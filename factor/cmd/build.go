@@ -33,23 +33,7 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("build called")
-		cwd, err := os.Getwd()
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		fmt.Println(cwd)
-
-		dir := filepath.Join(cwd, "components")
-		err = processComponents(dir)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-
-		dir = filepath.Join(cwd, "routes")
-		err = processComponents(dir)
+		err := build()
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -57,6 +41,32 @@ to quickly create a Cobra application.`,
 	},
 }
 
+func build() error {
+	fmt.Println("build called")
+	cwd, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+	fmt.Println(cwd)
+
+	dir := filepath.Join(cwd, "components")
+	err = processComponents(dir)
+	if err != nil {
+		return err
+	}
+
+	dir = filepath.Join(cwd, "routes")
+	err = processComponents(dir)
+	if err != nil {
+		return err
+	}
+
+	dir = filepath.Join(cwd, "models")
+	err = processModels(dir)
+	if err != nil {
+		return err
+	}
+}
 func init() {
 	rootCmd.AddCommand(buildCmd)
 
