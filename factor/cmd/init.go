@@ -52,17 +52,18 @@ to quickly create a Cobra application.`,
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-
 		cwd, err := os.Getwd()
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
+		// make directories under appName
 		err = makeDirectories(cwd)
 		if err != nil {
 			fmt.Println("error making directories:", err)
 			return
 		}
+		// put the new files there
 	},
 }
 
@@ -82,7 +83,7 @@ func init() {
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	initCmd.Flags().StringP("name", "n", "", "Name of your new application")
+	// initCmd.Flags().StringP("name", "n", "", "Name of your new application")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
