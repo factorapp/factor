@@ -15,10 +15,24 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
+	"os"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 )
+
+var appName string
+var directories = []string{
+	"app",
+	"assets",
+	"client",
+	"components",
+	"models",
+	"routes",
+	"server",
+}
 
 // initCmd represents the init command
 var initCmd = &cobra.Command{
@@ -30,11 +44,37 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
+	Args: func(cmd *cobra.Command, args []string) error {
+		if len(args) < 1 {
+			return errors.New("requires at least one arg")
+		}
+		appName = args[0]
+		return nil
+	},
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("init called")
+
+		cwd, err := os.Getwd()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		err = makeDirectories(cwd)
+		if err != nil {
+			fmt.Println("error making directories:", err)
+			return
+		}
 	},
 }
 
+func makeDirectories(cwd string) error {
+	for _, dir := range directories {
+		err := os.MkdirAll(filepath.Join(cwd, appName, dir), 0755)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
 func init() {
 	rootCmd.AddCommand(initCmd)
 
@@ -42,7 +82,7 @@ func init() {
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// initCmd.PersistentFlags().String("foo", "", "A help for foo")
+	initCmd.Flags().StringP("name", "n", "", "Name of your new application")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:

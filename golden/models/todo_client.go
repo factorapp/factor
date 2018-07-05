@@ -23,7 +23,6 @@ func (cl *TodoClient) Get(id uuid.UUID) (*Todo, error) {
 		ID: id,
 	}
 	message, err := json.EncodeClientRequest("TodoServer.Get", args)
-
 	if err != nil {
 		log.Fatalf("%s", err)
 	}
