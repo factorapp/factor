@@ -47,7 +47,6 @@ func Styles() string {
 	out := ""
 	for i, style := range styles {
 		fmt.Println("I:", i, style)
-		out += "\n"
 		out += style
 	}
 

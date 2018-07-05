@@ -72,6 +72,7 @@ func (n *Node) transformStyle(style string) string {
 	output := ""
 	for {
 		grammar, _, data := p.Next()
+		fmt.Println(grammar, string(data))
 		data = parse.Copy(data)
 		if grammar == css.ErrorGrammar {
 			if err := p.Err(); err != io.EOF {
@@ -96,14 +97,17 @@ func (n *Node) transformStyle(style string) string {
 				data = append(data, "."...)
 				data = append(data, n.ID.String()...)
 				data = append(data, "{"...)
+
+			} else if grammar == css.EndRulesetGrammar || grammar == css.EndAtRuleGrammar {
+				data = append(data, "\n"...)
 			} else if grammar == css.AtRuleGrammar || grammar == css.DeclarationGrammar || grammar == css.CustomPropertyGrammar {
 				data = append(data, ";"...)
 			} else if grammar == css.QualifiedRuleGrammar {
 				data = append(data, ","...)
 			}
 		}
+		data = append(data, "\n"...)
 		output += string(data)
-		output += string(" ")
 	}
 
 	return output
@@ -135,10 +139,11 @@ func (n *Node) markup(indent int) string {
 	b.WriteString(indt)
 	b.WriteRune('<')
 	b.WriteString(n.Tag)
-	b.WriteRune(' ')
-	b.WriteString(`id="`)
-	b.WriteString(n.ID.String())
-	b.WriteRune('"')
+	/*	b.WriteRune(' ')
+		b.WriteString(`id="`)
+		b.WriteString(n.ID.String())
+		b.WriteRune('"')
+	*/
 	b.WriteRune(' ')
 	b.WriteString(`class="`)
 	b.WriteString(n.ID.String())

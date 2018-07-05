@@ -7,7 +7,8 @@ import (
 type Index struct {
 }
 
-var IndexTemplate = `<main><h1>
+var IndexTemplate = `<main>
+<h1>
 	Great success!</h1>
 
 <figure>
@@ -27,6 +28,8 @@ var IndexStyles = `
 	}
 
 	h1 {
+		text-align: center;
+		margin: 0 auto;
 		font-size: 2.8em;
 		text-transform: uppercase;
 		font-weight: 700;
@@ -47,11 +50,6 @@ var IndexStyles = `
 		margin: 1em auto;
 	}
 
-	@media (min-width: 480px) {
-		h1 {
-			font-size: 4em;
-		}
-	}
 `
 
 func (t *Index) Render() string {
