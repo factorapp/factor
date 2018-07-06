@@ -28,7 +28,7 @@ func (p *Page) Render() vecty.ComponentOrHTML {
 						vecty.Attribute("rows", "14"),
 						vecty.Attribute("oninput", "texthandler"),
 					),
-					vecty.Text("vecty-data:Input"),
+					vecty.Text(p.Input),
 				),
 			),
 		),
