@@ -16,6 +16,7 @@ package cmd
 
 import (
 	"fmt"
+	"html/template"
 
 	"errors"
 
@@ -81,6 +82,11 @@ func (s *Transpiler) Code() string {
 }
 
 func (s *Transpiler) transcode() error {
+	// check for valid HTML
+	if _, err := template.New("syntaxcheck").Parse(s.html); err != nil {
+		return err
+	}
+
 	decoder := xml.NewDecoder(bytes.NewBufferString(s.html))
 
 	EOT := errors.New("end of tag")
