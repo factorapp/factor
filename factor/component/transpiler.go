@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"io/ioutil"
+	"regexp"
 
 	"errors"
 
@@ -75,6 +76,9 @@ func (s *Transpiler) transcode() error {
 		Open:      "{",
 		Separator: ",",
 	}*/
+
+	callRegexp := regexp.MustCompile(`{vecty-call:[a-zA-Z0-9_\-]+}`)
+	fieldRegexp := regexp.MustCompile(`{vecty-field:[a-zA-Z0-9_\-]+}`)
 
 	var transcode func(*xml.Decoder) (jen.Code, error)
 	transcode = func(decoder *xml.Decoder) (code jen.Code, err error) {
@@ -185,22 +189,27 @@ func (s *Transpiler) transcode() error {
 			return q, nil
 		case xml.CharData:
 			str := string(token)
-			// replace with struct field
-			// (vecty-field:)
-			if strings.HasPrefix(str, "vecty-field:") {
-				field := strings.TrimLeft(str, "vecty-field:")
-				return jen.Qual("github.com/gowasm/vecty", "Text").Call(
-					// TODO: struct qualifier
-					jen.Id("p." + field),
-				), nil
-			}
-			// replace with function call
-			// (vecty-call:)
-			if strings.HasPrefix(str, "vecty-call:") {
-				fnCall := strings.TrimLeft(str, "vecty-call:")
-				return jen.Qual("github.com/gowasm/vecty", "Text").Call(
-					jen.Id("p." + fnCall + "()"),
-				), nil
+			hasCall := callRegexp.MatchString(str)
+			hasField := callRegexp.MatchString(str)
+			hasSpecial := hasCall || hasField
+
+			if hasSpecial {
+				fieldQualifier := func(name string) *jen.Statement {
+					return jen.Qual("github.com/gowasm/vecty", "Text").Call(
+						// TODO: struct qualifier
+						jen.Id("p." + name),
+					)
+				}
+				callQualifier := func(name string) *jen.Statement {
+					fnCall := strings.TrimLeft(str, "vecty-call:")
+					return jen.Qual("github.com/gowasm/vecty", "Text").Call(
+						jen.Id("p." + fnCall + "()"),
+					)
+				}
+
+				// TODO: find next index for each field and call regexp.
+				// build up a string of text statements for static text, and
+				// generated calls or field accesses
 			}
 			s := strings.TrimSpace(string(token))
 			if s == "" {
