@@ -1,18 +1,11 @@
-package main
+package components
 
 import (
 	"github.com/gowasm/vecty"
+	"github.com/gowasm/vecty/elem"
+	"github.com/microcosm-cc/bluemonday"
+	"github.com/russross/blackfriday"
 )
-
-func main() {
-	vecty.SetTitle("Markdown Demo")
-	vecty.RenderBody(&PageView{
-		Input: `# Markdown Example
-
-This is a live editor, try editing the Markdown on the right of the page.
-`,
-	})
-}
 
 // PageView is our main page component.
 type PageView struct {
@@ -22,7 +15,7 @@ type PageView struct {
 
 // Render implements the vecty.Component interface.
 func (p *PageView) Render() vecty.ComponentOrHTML {
-	return template
+	return p.template()
 }
 
 // Markdown is a simple component which renders the Input markdown as sanitized
@@ -32,7 +25,6 @@ type Markdown struct {
 	Input string `vecty:"prop"`
 }
 
-/*
 // Render implements the vecty.Component interface.
 func (m *Markdown) Render() vecty.ComponentOrHTML {
 	// Render the markdown input into HTML using Blackfriday.
@@ -48,4 +40,3 @@ func (m *Markdown) Render() vecty.ComponentOrHTML {
 		),
 	)
 }
-*/

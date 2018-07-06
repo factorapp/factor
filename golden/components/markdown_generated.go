@@ -1,6 +1,12 @@
 package components
 
-func template vecty.ComponentOrHTML{
+import (
+	"github.com/gowasm/vecty"
+	"github.com/gowasm/vecty/elem"
+	"github.com/gowasm/vecty/event"
+)
+
+func (p *PageView) template() vecty.ComponentOrHTML {
 	return elem.Body(
 		// Display a textarea on the right-hand side of the page.
 		elem.Div(
@@ -25,6 +31,6 @@ func template vecty.ComponentOrHTML{
 		),
 
 		// Render the markdown.
-		// &Markdown{Input: p.Input},
+		&Markdown{Input: p.Input},
 	)
 }

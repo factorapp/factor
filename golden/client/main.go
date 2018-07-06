@@ -2,19 +2,19 @@
 package main
 
 import (
-	"fmt"
-	"log"
-
 	"github.com/bketelsen/factor/golden/components"
-	_ "github.com/bketelsen/factor/golden/routes"
-	"github.com/bketelsen/factor/markup"
+	"github.com/gowasm/vecty"
 )
 
 func main() {
-	c := &components.App{}
-	node, err := markup.MountBody(c)
-	fmt.Println(node)
-	if err != nil {
-		log.Fatal(err)
-	}
+	c := make(chan struct{}, 0)
+
+	vecty.SetTitle("Markdown Demo")
+	vecty.RenderBody(&components.PageView{
+		Input: `# Markdown Example
+	
+	This is a live editor, try editing the Markdown on the right of the page.
+	`,
+	})
+	<-c
 }
