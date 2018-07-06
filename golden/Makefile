@@ -1,5 +1,5 @@
 wasm: 
-	GOROOT=~/gowasm GOARCH=wasm GOOS=js ~/gowasm/bin/go build -o example.wasm ./client 
+	GOARCH=wasm GOOS=js go build -o example.wasm ./client 
 	mv example.wasm ./app/
 
 run:  wasm

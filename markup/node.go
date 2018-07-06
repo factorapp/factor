@@ -95,6 +95,7 @@ func (n *Node) transformStyle(style string) string {
 			if grammar == css.BeginAtRuleGrammar || grammar == css.BeginRulesetGrammar {
 
 				data = append(data, "."...)
+				data = append(data, "factor"...)
 				data = append(data, n.ID.String()...)
 				data = append(data, "{"...)
 
