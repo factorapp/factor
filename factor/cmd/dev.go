@@ -16,6 +16,7 @@ package cmd
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -66,7 +67,7 @@ func processComponents(base string) error {
 			if err != nil {
 				return err
 			}
-			c, _ := component.Parse(f, componentName(path))
+			/*c, _ := component.Parse(f, componentName(path))
 
 			comp := componentName(path)
 			gfn := filepath.Join(base, strings.ToLower(comp)+".go")
@@ -82,6 +83,22 @@ func processComponents(base string) error {
 			defer gofile.Close()
 
 			c.Transform(gofile)
+			*/
+			transpiler, err := component.NewTranspiler(f)
+			if err != nil {
+				return err
+			}
+
+			gofile, err := os.Create(goFileName(base, componentName(path)))
+			if err != nil {
+				return err
+			}
+			defer gofile.Close()
+			_, err = io.WriteString(gofile, transpiler.Code())
+			if err != nil {
+				return err
+			}
+			fmt.Println(transpiler.Code())
 		}
 		return nil
 	})

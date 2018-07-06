@@ -1,24 +1,26 @@
-package routes
+// This file was created with https://jsgo.io/dave/html2vecty
+package main
 
 import (
-	"github.com/bketelsen/factor/markup"
+	"github.com/gowasm/vecty"
+	"github.com/gowasm/vecty/elem"
 )
 
-type Blogslug struct {
+func main() {
+	vecty.RenderBody(&Page{})
 }
 
-var BlogslugTemplate = `<h1>blog</h1>
-
-<p>This is a blog page, will populate by parameter</p>`
-var BlogslugStyles = ``
-
-func (t *Blogslug) Render() string {
-	return BlogslugTemplate
-}
-func (t *Blogslug) Style() string {
-	return BlogslugStyles
+type Page struct {
+	vecty.Core
 }
 
-func init() {
-	markup.Register(&Blogslug{})
+func (p *Page) Render() vecty.ComponentOrHTML {
+	return elem.Body(
+		elem.Heading1(
+			vecty.Text("blog"),
+		),
+		elem.Paragraph(
+			vecty.Text("This is a blog page, will populate by parameter"),
+		),
+	)
 }

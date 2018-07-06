@@ -1,12 +1,23 @@
 package models
 
+import (
+	"net/rpc"
+)
+
 type Client struct {
+	
 	TodoClient
+	
 }
 
-func NewClient() (*Client, error) {
+func NewClient(port int) (*Client, error) {
+	client, err := rpc.DialHTTP("tcp", ":1234")
+	if err != nil {
+		return nil, err
+	}
 	return &Client{
-
-		TodoClient{},
+		
+		TodoClient{RPC: client},
+		
 	}, nil
 }

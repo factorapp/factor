@@ -1,31 +1,39 @@
-package components
+// This file was created with https://jsgo.io/dave/html2vecty
+package main
 
 import (
-	"github.com/bketelsen/factor/markup"
-	"github.com/satori/go.uuid"
+	"github.com/gowasm/vecty"
+	"github.com/gowasm/vecty/elem"
+	"github.com/gowasm/vecty/prop"
 )
 
-type Todo struct {
-	ID          uuid.UUID
-	Name        string
-	Description string
-	Permalink   string
+func main() {
+	vecty.RenderBody(&Page{})
 }
 
-var TodoTemplate = `<!-- maybe factor can somehow "bind" the models.Todo to this html? -->
-<div>
-    <h1>{{ .Name }}</h1>
-    <small>{{ .Description }}</small>
-    <div>(<a href="{{ .Permalink }}">Permalink</a>)</div>
-</div>`
-var TodoStyles = ``
+type Page struct {
+	vecty.Core
+}
 
-func (t *Todo) Render() string {
-	return TodoTemplate
-}
-func (t *Todo) Style() string {
-	return TodoStyles
-}
-func init() {
-	markup.Register(&Todo{})
+func (p *Page) Render() vecty.ComponentOrHTML {
+	return elem.Body(
+		elem.Div(
+			elem.Heading1(
+				vecty.Text(p.Name),
+			),
+			elem.Small(
+				vecty.Text(p.Description),
+			),
+			elem.Div(
+				vecty.Text("("),
+				elem.Anchor(
+					vecty.Markup(
+						prop.Href("vecty-field:Permalink"),
+					),
+					vecty.Text("Permalink"),
+				),
+				vecty.Text(")"),
+			),
+		),
+	)
 }

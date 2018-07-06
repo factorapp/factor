@@ -4,7 +4,7 @@ package models
 // fill in your server implementation here!
 
 import (
-	"net/http"
+	"net/rpc"
 )
 
 var todoServer = NewTodoServer()
@@ -20,13 +20,8 @@ func (srv *TodoServer) Create(req CreateTodoReq, res *CreateTodoRes) error {
 	return nil
 }
 
-func (srv *TodoServer) Get(r *http.Request, req *GetTodoReq, res *GetTodoRes) error {
-	res.Data = Todo{
-		ID:          req.ID,
-		Name:        "Todo Name",
-		Description: "Todo Description",
-		Permalink:   "/todos/" + req.ID.String(),
-	}
+func (srv *TodoServer) Get(req GetTodoReq, res *GetTodoRes) error {
+	// TODO
 	return nil
 }
 
@@ -38,4 +33,8 @@ func (srv *TodoServer) Update(req UpdateTodoReq, res *UpdateTodoRes) error {
 func (srv *TodoServer) Delete(req DeleteTodoReq, res *DeleteTodoRes) error {
 	// TODO
 	return nil
+}
+
+func init() {
+	rpc.RegisterName("Todo", todoServer)
 }

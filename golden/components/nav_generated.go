@@ -1,69 +1,30 @@
-package components
+// This file was created with https://jsgo.io/dave/html2vecty
+package main
 
 import (
-	"github.com/bketelsen/factor/markup"
+	"github.com/gowasm/vecty"
+	"github.com/gowasm/vecty/elem"
 )
 
-var NavTemplate = `<nav>
-    <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/about">About</a></li>
-        <li><a href="/todos">Todos</a></li>
-    </ul>
-</nav>`
-var NavStyles = `
-    nav {
-        border-bottom: 1px solid rgba(170, 30, 30, 0.1);
-        font-weight: 300;
-        padding: 0 1em;
-    }
-    
-    ul {
-        margin: 0;
-        padding: 0;
-    }
-    /* clearfix */
-    
-    ul::after {
-        content: '';
-        display: block;
-        clear: both;
-    }
-    
-    li {
-        display: block;
-        float: left;
-    }
-    
-    .selected {
-        position: relative;
-        display: inline-block;
-    }
-    
-    .selected::after {
-        position: absolute;
-        content: '';
-        width: calc(100% - 1em);
-        height: 2px;
-        background-color: rgb(170, 30, 30);
-        display: block;
-        bottom: -1px;
-    }
-    
-    a {
-        text-decoration: none;
-        padding: 1em 0.5em;
-        display: block;
-    }
-`
-
-func (t *Nav) Style() string {
-	return NavStyles
-}
-func (t *Nav) Render() string {
-	return NavTemplate
+func main() {
+	vecty.RenderBody(&Page{})
 }
 
-func init() {
-	markup.Register(&Nav{})
+type Page struct {
+	vecty.Core
+}
+
+func (p *Page) Render() vecty.ComponentOrHTML {
+	return elem.Body(
+		elem.Navigation(
+			elem.UnorderedList(
+				elem.ListItem(
+					vecty.Text("This is an item"),
+				),
+				elem.ListItem(
+					vecty.Text("This is another item"),
+				),
+			),
+		),
+	)
 }

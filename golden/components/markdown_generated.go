@@ -1,36 +1,36 @@
-package components
+// This file was created with https://jsgo.io/dave/html2vecty
+package main
 
 import (
 	"github.com/gowasm/vecty"
 	"github.com/gowasm/vecty/elem"
-	"github.com/gowasm/vecty/event"
 )
 
-func (p *PageView) template() vecty.ComponentOrHTML {
-	return elem.Body(
-		// Display a textarea on the right-hand side of the page.
-		elem.Div(
-			vecty.Markup(
-				vecty.Style("float", "right"),
-			),
-			elem.TextArea(
-				vecty.Markup(
-					vecty.Style("font-family", "monospace"),
-					vecty.Property("rows", 14),
-					vecty.Property("cols", 70),
+func main() {
+	vecty.RenderBody(&Page{})
+}
 
-					// When input is typed into the textarea, update the local
-					// component state and rerender.
-					event.Input(func(e *vecty.Event) {
-						p.Input = e.Target.Get("value").String()
-						vecty.Rerender(p)
-					}),
+type Page struct {
+	vecty.Core
+}
+
+func (p *Page) Render() vecty.ComponentOrHTML {
+	return elem.Body(
+		elem.Body(
+			elem.Div(
+				vecty.Markup(
+					vecty.Style("float", "right"),
 				),
-				vecty.Text(p.Input), // initial textarea text.
+				elem.TextArea(
+					vecty.Markup(
+						vecty.Style("font-family", "monospace"),
+						vecty.Attribute("cols", "70"),
+						vecty.Attribute("rows", "14"),
+						vecty.Attribute("oninput", "texthandler"),
+					),
+					vecty.Text("vecty-data:Input"),
+				),
 			),
 		),
-
-		// Render the markdown.
-		&Markdown{Input: p.Input},
 	)
 }
