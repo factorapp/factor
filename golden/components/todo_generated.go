@@ -28,7 +28,7 @@ func (p *Page) Render() vecty.ComponentOrHTML {
 				vecty.Text("("),
 				elem.Anchor(
 					vecty.Markup(
-						prop.Href("vecty-field:Permalink"),
+						prop.Href(p.Permalink),
 					),
 					vecty.Text("Permalink"),
 				),

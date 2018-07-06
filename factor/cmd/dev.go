@@ -98,7 +98,6 @@ func processComponents(base string) error {
 			if err != nil {
 				return err
 			}
-			fmt.Println(transpiler.Code())
 		}
 		return nil
 	})

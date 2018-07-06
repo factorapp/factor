@@ -131,15 +131,23 @@ func (s *Transpiler) transcode() error {
 									jen.Lit(attribute),
 									jen.Lit(v.Value),
 								)
+
 							case boolProps[v.Name.Local] != "":
 								value := v.Value == "true"
 								g.Qual("github.com/gowasm/vecty/prop", boolProps[v.Name.Local]).Call(
 									jen.Lit(value),
 								)
 							case stringProps[v.Name.Local] != "":
-								g.Qual("github.com/gowasm/vecty/prop", stringProps[v.Name.Local]).Call(
-									jen.Lit(v.Value),
-								)
+								if strings.HasPrefix(v.Value, "vecty-field:") {
+									field := strings.TrimLeft(v.Value, "vecty-field:")
+									g.Qual("github.com/gowasm/vecty/prop", stringProps[v.Name.Local]).Call(
+										jen.Id("p." + field),
+									)
+								} else {
+									g.Qual("github.com/gowasm/vecty/prop", stringProps[v.Name.Local]).Call(
+										jen.Lit(v.Value),
+									)
+								}
 							case v.Name.Local == "xmlns":
 								g.Qual("github.com/gowasm/vecty", "Namespace").Call(
 									jen.Lit(v.Value),
