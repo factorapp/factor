@@ -18,7 +18,6 @@ import (
 	"fmt"
 
 	"errors"
-	"fmt"
 
 	"bytes"
 	"io"
@@ -70,7 +69,6 @@ func NewTranspiler(html string) *Transpiler {
 }
 
 type Transpiler struct {
-	app        *App
 	html, code string
 }
 

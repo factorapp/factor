@@ -66,6 +66,7 @@ func build() error {
 	if err != nil {
 		return err
 	}
+	return nil
 }
 func init() {
 	rootCmd.AddCommand(buildCmd)
