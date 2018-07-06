@@ -203,6 +203,24 @@ func (s *Transpiler) transcode() error {
 			}
 			return q, nil
 		case xml.CharData:
+			str := string(token)
+			// replace with struct field
+			// (vecty-field:)
+			if strings.HasPrefix(str, "vecty-field:") {
+				field := strings.TrimLeft(str, "vecty-field:")
+				return jen.Qual("github.com/gowasm/vecty", "Text").Call(
+					// TODO: struct qualifier
+					jen.Lit("p." + field),
+				), nil
+			}
+			// replace with function call
+			// (vecty-call:)
+			if strings.HasPrefix(str, "vecty-call:") {
+				fnCall := strings.TrimLeft(str, "vecty-call:")
+				return jen.Qual("github.com/gowasm/vecty", "Text").Call(
+					jen.Lit("p." + fnCall + "()"),
+				), nil
+			}
 			s := strings.TrimSpace(string(token))
 			if s == "" {
 				return nil, nil
@@ -260,7 +278,7 @@ func (s *Transpiler) transcode() error {
 	file.Type().Id("Page").Struct(
 		jen.Qual("github.com/gowasm/vecty", "Core"),
 	)
-	file.Func().Params(jen.Op("*").Id("Page")).Id("Render").Params().Qual("github.com/gowasm/vecty", "ComponentOrHTML").Block(
+	file.Func().Params(jen.Id("p").Op("*").Id("Page")).Id("Render").Params().Qual("github.com/gowasm/vecty", "ComponentOrHTML").Block(
 		jen.Return(
 			jen.Qual("github.com/gowasm/vecty/elem", "Body").Custom(call, elements...),
 		),
