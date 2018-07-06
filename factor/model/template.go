@@ -168,7 +168,7 @@ import (
 
 type Client struct {
 	{{range $cl := .Clients}}
-	{{$cl}}
+	{{$cl}} {{$cl}}
 	{{end}}
 }
 
