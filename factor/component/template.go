@@ -5,7 +5,7 @@ package components
 
 import (
 	{{.WriteImports}}
-	"github.com/bketelsen/factor/markup"
+	"github.com/factorapp/factor/markup"
 )
 
 {{ if .Struct }}type {{.Name}} struct {

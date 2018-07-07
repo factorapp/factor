@@ -2,7 +2,7 @@
 package main
 
 import (
-	"github.com/bketelsen/factor/golden/components"
+	"github.com/factorapp/factor/golden/components"
 	"github.com/gowasm/vecty"
 )
 

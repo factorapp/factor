@@ -23,7 +23,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/bketelsen/factor/factor/component"
+	"github.com/factorapp/factor/factor/component"
 	"github.com/spf13/cobra"
 )
 

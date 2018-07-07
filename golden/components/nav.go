@@ -1,7 +1,7 @@
 package components
 
 import (
-	"github.com/bketelsen/factor/markup"
+	"github.com/factorapp/factor/markup"
 )
 
 /*

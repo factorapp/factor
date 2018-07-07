@@ -8,7 +8,7 @@ import (
 	"github.com/gorilla/rpc/v2"
 	"github.com/gorilla/rpc/v2/json"
 
-	"github.com/bketelsen/factor/golden/models"
+	"github.com/factorapp/factor/golden/models"
 )
 
 func wasmHandler(w http.ResponseWriter, r *http.Request) {

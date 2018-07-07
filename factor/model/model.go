@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/bketelsen/factor/factor/files"
+	"github.com/factorapp/factor/factor/files"
 )
 
 // Model represents a model
