@@ -1,5 +1,5 @@
 // This file was created with https://jsgo.io/dave/html2vecty
-package main
+package routes
 
 import (
 	"github.com/gowasm/vecty"
