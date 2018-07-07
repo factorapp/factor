@@ -1,4 +1,5 @@
-// This file was created with https://jsgo.io/dave/html2vecty
+// This file was created with https://github.com/factorapp/factor
+// using https://jsgo.io/dave/html2vecty
 package routes
 
 import (

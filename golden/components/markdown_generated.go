@@ -1,16 +1,11 @@
-// This file was created with https://jsgo.io/dave/html2vecty
+// This file was created with https://github.com/factorapp/factor
+// using https://jsgo.io/dave/html2vecty
 package components
 
 import (
 	"github.com/gowasm/vecty"
 	"github.com/gowasm/vecty/elem"
 )
-
-/*
-type Markdown struct {
-	vecty.Core
-}
-*/
 
 func (p *Markdown) Render() vecty.ComponentOrHTML {
 	return elem.Body(

@@ -1,8 +1,8 @@
-// This file was created with https://jsgo.io/dave/html2vecty
+// This file was created with https://github.com/factorapp/factor
+// using https://jsgo.io/dave/html2vecty
 package routes
 
 import (
-	"github.com/factorapp/factor/golden/components"
 	"github.com/gowasm/vecty"
 	"github.com/gowasm/vecty/elem"
 	"github.com/gowasm/vecty/prop"
@@ -14,7 +14,6 @@ type Index struct {
 
 func (p *Index) Render() vecty.ComponentOrHTML {
 	return elem.Body(
-		&components.Nav{},
 		elem.Main(
 			elem.Heading1(
 				vecty.Text("Great success!"),
@@ -23,7 +22,7 @@ func (p *Index) Render() vecty.ComponentOrHTML {
 				elem.Image(
 					vecty.Markup(
 						vecty.Attribute("alt", "Borat"),
-						prop.Src("/assets/great-success.png"),
+						prop.Src("great-success.png"),
 					),
 				),
 				elem.FigureCaption(

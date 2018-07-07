@@ -15,7 +15,7 @@
 package cmd
 
 import (
-	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -35,28 +35,27 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		err := build()
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			return
 		}
 	},
 }
 
 func build() error {
-	fmt.Println("build called")
+	log.Println("Building Application")
 	cwd, err := os.Getwd()
 	if err != nil {
 		return err
 	}
-	fmt.Println(cwd)
 
 	dir := filepath.Join(cwd, "components")
-	err = processComponents(dir)
+	err = processComponents(dir, "components")
 	if err != nil {
 		return err
 	}
 
 	dir = filepath.Join(cwd, "routes")
-	err = processComponents(dir)
+	err = processComponents(dir, "routes")
 	if err != nil {
 		return err
 	}

@@ -19,16 +19,18 @@ import (
 	"github.com/dave/jennifer/jen"
 )
 
-func NewTranspiler(r io.ReadCloser, componentName string) (*Transpiler, error) {
+func NewTranspiler(r io.ReadCloser, createStruct bool, componentName, packageName string) (*Transpiler, error) {
 	s := &Transpiler{
 		reader:        r,
+		createStruct:  createStruct,
+		packageName:   packageName,
 		componentName: componentName,
 	}
 	err := s.read()
 	if err != nil {
 		return s, err
 	}
-	s.transcode()
+	err = s.transcode()
 	if err != nil {
 		return s, err
 	}
@@ -37,7 +39,9 @@ func NewTranspiler(r io.ReadCloser, componentName string) (*Transpiler, error) {
 
 type Transpiler struct {
 	reader        io.ReadCloser
+	createStruct  bool
 	componentName string
+	packageName   string
 	html, code    string
 }
 
@@ -220,14 +224,17 @@ func (s *Transpiler) transcode() error {
 			return jen.Qual("github.com/gowasm/vecty", "Text").Call(jen.Lit(s)), nil
 		case xml.EndElement:
 			return nil, EOT
+		case xml.Comment:
+			return nil, nil
 		default:
-			fmt.Printf("%T %#v\n", token, token)
+			fmt.Printf("%T %#v \n", token, token)
 		}
 		return nil, nil
 	}
 
-	file := jen.NewFile("main")
-	file.PackageComment("This file was created with https://jsgo.io/dave/html2vecty")
+	file := jen.NewFile(s.packageName)
+	file.PackageComment("This file was created with https://github.com/factorapp/factor")
+	file.PackageComment("using https://jsgo.io/dave/html2vecty")
 	file.ImportNames(map[string]string{
 		"github.com/gowasm/vecty":       "vecty",
 		"github.com/gowasm/vecty/elem":  "elem",
@@ -268,9 +275,11 @@ func (s *Transpiler) transcode() error {
 			),
 		)
 	*/
-	file.Type().Id(s.componentName).Struct(
-		jen.Qual("github.com/gowasm/vecty", "Core"),
-	)
+	if s.createStruct {
+		file.Type().Id(s.componentName).Struct(
+			jen.Qual("github.com/gowasm/vecty", "Core"),
+		)
+	}
 	file.Func().Params(jen.Id("p").Op("*").Id(s.componentName)).Id("Render").Params().Qual("github.com/gowasm/vecty", "ComponentOrHTML").Block(
 		jen.Return(
 			jen.Qual("github.com/gowasm/vecty/elem", "Body").Custom(call, elements...),

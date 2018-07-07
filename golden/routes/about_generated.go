@@ -1,10 +1,10 @@
-// This file was created with https://jsgo.io/dave/html2vecty
+// This file was created with https://github.com/factorapp/factor
+// using https://jsgo.io/dave/html2vecty
 package routes
 
 import (
 	"github.com/gowasm/vecty"
 	"github.com/gowasm/vecty/elem"
-	"github.com/gowasm/vecty/prop"
 )
 
 type About struct {
@@ -18,13 +18,6 @@ func (p *About) Render() vecty.ComponentOrHTML {
 		),
 		elem.Paragraph(
 			vecty.Text("This is the 'about' page. There's not much here."),
-		),
-
-		elem.Anchor(
-			vecty.Markup(
-				prop.Href("/"),
-			),
-			vecty.Text("Permalink"),
 		),
 	)
 }
