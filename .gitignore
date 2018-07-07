@@ -1,2 +1,5 @@
 golden/server/server
 /golden/server/server
+.idea
+.vs
+.vscode
