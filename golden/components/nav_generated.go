@@ -6,15 +6,11 @@ import (
 	"github.com/gowasm/vecty/elem"
 )
 
-func main() {
-	vecty.RenderBody(&Page{})
-}
-
-type Page struct {
+type Nav struct {
 	vecty.Core
 }
 
-func (p *Page) Render() vecty.ComponentOrHTML {
+func (p *Nav) Render() vecty.ComponentOrHTML {
 	return elem.Body(
 		elem.Navigation(
 			elem.UnorderedList(

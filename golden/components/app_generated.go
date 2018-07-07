@@ -6,15 +6,11 @@ import (
 	"github.com/gowasm/vecty/elem"
 )
 
-func main() {
-	vecty.RenderBody(&Page{})
-}
-
-type Page struct {
+type App struct {
 	vecty.Core
 }
 
-func (p *Page) Render() vecty.ComponentOrHTML {
+func (p *App) Render() vecty.ComponentOrHTML {
 	return elem.Body(
 		elem.Main(
 			vecty.Tag(

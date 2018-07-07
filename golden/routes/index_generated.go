@@ -7,15 +7,11 @@ import (
 	"github.com/gowasm/vecty/prop"
 )
 
-func main() {
-	vecty.RenderBody(&Page{})
-}
-
-type Page struct {
+type Index struct {
 	vecty.Core
 }
 
-func (p *Page) Render() vecty.ComponentOrHTML {
+func (p *Index) Render() vecty.ComponentOrHTML {
 	return elem.Body(
 		elem.Main(
 			elem.Heading1(

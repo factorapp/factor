@@ -19,9 +19,10 @@ import (
 	"github.com/dave/jennifer/jen"
 )
 
-func NewTranspiler(r io.ReadCloser) (*Transpiler, error) {
+func NewTranspiler(r io.ReadCloser, componentName string) (*Transpiler, error) {
 	s := &Transpiler{
-		reader: r,
+		reader:        r,
+		componentName: componentName,
 	}
 	err := s.read()
 	if err != nil {
@@ -35,8 +36,9 @@ func NewTranspiler(r io.ReadCloser) (*Transpiler, error) {
 }
 
 type Transpiler struct {
-	reader     io.ReadCloser
-	html, code string
+	reader        io.ReadCloser
+	componentName string
+	html, code    string
 }
 
 func (s *Transpiler) read() error {
@@ -260,15 +262,16 @@ func (s *Transpiler) transcode() error {
 			return elem.Body(...)
 		}
 	*/
-	file.Func().Id("main").Params().Block(
-		jen.Qual("github.com/gowasm/vecty", "RenderBody").Call(
-			jen.Op("&").Id("Page").Values(),
-		),
-	)
-	file.Type().Id("Page").Struct(
+	/*	file.Func().Id("main").Params().Block(
+			jen.Qual("github.com/gowasm/vecty", "RenderBody").Call(
+				jen.Op("&").Id("Page").Values(),
+			),
+		)
+	*/
+	file.Type().Id(s.componentName).Struct(
 		jen.Qual("github.com/gowasm/vecty", "Core"),
 	)
-	file.Func().Params(jen.Id("p").Op("*").Id("Page")).Id("Render").Params().Qual("github.com/gowasm/vecty", "ComponentOrHTML").Block(
+	file.Func().Params(jen.Id("p").Op("*").Id(s.componentName)).Id("Render").Params().Qual("github.com/gowasm/vecty", "ComponentOrHTML").Block(
 		jen.Return(
 			jen.Qual("github.com/gowasm/vecty/elem", "Body").Custom(call, elements...),
 		),

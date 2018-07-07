@@ -7,32 +7,31 @@ import (
 	"github.com/gowasm/vecty/prop"
 )
 
-func main() {
-	vecty.RenderBody(&Page{})
-}
-
-type Page struct {
+type Todo struct {
 	vecty.Core
 }
 
-func (p *Page) Render() vecty.ComponentOrHTML {
+func (p *Todo) Render() vecty.ComponentOrHTML {
 	return elem.Body(
 		elem.Div(
 			elem.Heading1(
-				vecty.Text(p.Name),
+				vecty.Text("vecty-field:Name"),
 			),
 			elem.Small(
-				vecty.Text(p.Description),
+				vecty.Text("vecty-field:Description"),
 			),
 			elem.Div(
 				vecty.Text("("),
 				elem.Anchor(
 					vecty.Markup(
-						prop.Href(p.Permalink),
+						prop.Href("{vecty-field:Permalink}"),
 					),
 					vecty.Text("Permalink"),
 				),
 				vecty.Text(")"),
+			),
+			elem.Div(
+				vecty.Text("You are {vecty-call:GetAge} years old"),
 			),
 		),
 	)

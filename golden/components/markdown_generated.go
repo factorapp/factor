@@ -6,15 +6,11 @@ import (
 	"github.com/gowasm/vecty/elem"
 )
 
-func main() {
-	vecty.RenderBody(&Page{})
-}
-
-type Page struct {
+type Markdown struct {
 	vecty.Core
 }
 
-func (p *Page) Render() vecty.ComponentOrHTML {
+func (p *Markdown) Render() vecty.ComponentOrHTML {
 	return elem.Body(
 		elem.Body(
 			elem.Div(
@@ -28,7 +24,7 @@ func (p *Page) Render() vecty.ComponentOrHTML {
 						vecty.Attribute("rows", "14"),
 						vecty.Attribute("oninput", "texthandler"),
 					),
-					vecty.Text(p.Input),
+					vecty.Text("vecty-field:Input"),
 				),
 			),
 		),

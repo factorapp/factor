@@ -84,7 +84,7 @@ func processComponents(base string) error {
 
 			c.Transform(gofile)
 			*/
-			transpiler, err := component.NewTranspiler(f)
+			transpiler, err := component.NewTranspiler(f, componentName(path))
 			if err != nil {
 				return err
 			}
