@@ -22,7 +22,7 @@ func (p *Index) Render() vecty.ComponentOrHTML {
 				elem.Image(
 					vecty.Markup(
 						vecty.Attribute("alt", "Borat"),
-						prop.Src("great-success.png"),
+						prop.Src("/assets/great-success.png"),
 					),
 				),
 				elem.FigureCaption(
