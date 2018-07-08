@@ -1,0 +1,15 @@
+# Names should be added to this file like so:
+#
+#  Jane Doe <jane@gmail.com>
+#  Jane Doe <preferred_link>
+#  Jane Doe <jane@gmail.com> <preferred_link>
+#
+# <preferred_link> may be the person's website, GitHub profile, or GitHub
+# project related to their contribution to Vecty.
+
+# Please keep the list sorted.
+
+Igor Afanasyev <github.com/iafan/vecty-logo>
+Peter Fern <golang+vecty@0xc0dedbad.com> <github.com/pdf>
+Stephen Gutekanst <stephen.gutekanst@gmail.com> <github.com/slimsag>
+Thomas Bruyelle <thomas.bruyelle@gmail.com> <github.com/tbruyelle>

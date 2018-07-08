@@ -1,0 +1,2 @@
+testdata/*.got.txt
+.DS_store
