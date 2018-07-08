@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/factorapp/factor/factor/model"
+	"github.com/factorapp/factor/model"
 )
 
 func processModels(base string) error {

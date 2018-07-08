@@ -1,7 +1,7 @@
 package components
 
 import (
-	"github.com/factorapp/factor/golden/models"
+	"github.com/factorapp/factor/examples/models"
 )
 
 type App struct {

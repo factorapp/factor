@@ -103,7 +103,7 @@ func (s *Transpiler) transcode() error {
 				fmt.Println(token.Name.Space, token.Name.Local)
 				if strings.HasPrefix(token.Name.Space, "components") {
 					// TODO: pass the right package name in
-					vectyPackage = "github.com/factorapp/factor/golden/components"
+					vectyPackage = "github.com/factorapp/factor/examples/components"
 					var component string
 					var qual bool
 					if s.packageName == "components" {
@@ -497,7 +497,7 @@ func (s *Transpiler) transcode() error {
 		"github.com/gowasm/vecty/prop":                    "prop",
 		"github.com/gowasm/vecty/event":                   "event",
 		"github.com/gowasm/vecty/style":                   "style",
-		"_ github.com/factorapp/factor/golden/components": "components",
+		"_ github.com/factorapp/factor/examples/components": "components",
 	})
 	var elements []jen.Code
 	for {
