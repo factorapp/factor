@@ -9,14 +9,14 @@ import (
 
 type Index struct {
 	vecty.Core
-	Notice string
-	count  int
+	CountText string
+	count     int
 }
 
 func (i *Index) OnClick(e *vecty.Event) {
 	fmt.Println("Someone clicked on me", e.Target)
 	i.count++
-	i.Notice = "Click Count: " + strconv.Itoa(i.count)
+	i.CountText = "Click Count: " + strconv.Itoa(i.count)
 
 	vecty.Rerender(i)
 }

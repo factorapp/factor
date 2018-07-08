@@ -35,7 +35,7 @@ func (p *Index) Render() vecty.ComponentOrHTML {
 					),
 				),
 				elem.Strong(
-					vecty.Text(p.Notice),
+					vecty.Text(p.CountText),
 				),
 			),
 		),
