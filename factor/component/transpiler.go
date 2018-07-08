@@ -159,6 +159,14 @@ func (s *Transpiler) transcode() error {
 										jen.Lit(v.Value),
 									)
 								}
+							case strings.HasPrefix(v.Name.Space, "vecty"):
+								fmt.Println(v.Name.Space, v.Name.Local, v.Value)
+								field := strings.TrimLeft(v.Name.Local, "on")
+								field = strings.ToLower(field)
+								g.Qual("github.com/gowasm/vecty/event", strings.Title(field)).Call(
+									jen.Id("p." + v.Value),
+								)
+
 							case v.Name.Local == "xmlns":
 								g.Qual("github.com/gowasm/vecty", "Namespace").Call(
 									jen.Lit(v.Value),
