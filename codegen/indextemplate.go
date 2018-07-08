@@ -1,6 +1,8 @@
-package cmd
+package codegen
 
-var indexTemplate = `<!doctype html>
+// IndexHTML returns the HTML for the initial index page that serves
+// the wasm "shell"
+const IndexHTML = `<!doctype html>
 <html>
 
 <head>
