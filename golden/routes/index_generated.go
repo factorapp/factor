@@ -3,6 +3,7 @@
 package routes
 
 import (
+	components "github.com/factorapp/factor/golden/components"
 	"github.com/gowasm/vecty"
 	"github.com/gowasm/vecty/elem"
 	"github.com/gowasm/vecty/event"
@@ -12,6 +13,12 @@ import (
 func (p *Index) Render() vecty.ComponentOrHTML {
 	return elem.Body(
 		elem.Main(
+			components.Nav(
+				"Nav",
+				vecty.Markup(
+					vecty.Attribute("MyProp", "blue"),
+				),
+			),
 			elem.Heading1(
 				vecty.Text("Great success!"),
 			),

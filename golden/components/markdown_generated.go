@@ -21,7 +21,7 @@ func (p *Markdown) Render() vecty.ComponentOrHTML {
 						vecty.Attribute("rows", "14"),
 						vecty.Attribute("oninput", "texthandler"),
 					),
-					vecty.Text("vecty-field:Input"),
+					vecty.Text(p.Input),
 				),
 			),
 		),

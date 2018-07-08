@@ -5,7 +5,6 @@ package components
 import (
 	"github.com/gowasm/vecty"
 	"github.com/gowasm/vecty/elem"
-	"github.com/gowasm/vecty/event"
 	"github.com/gowasm/vecty/prop"
 )
 
@@ -14,13 +13,6 @@ func (p *Todo) Render() vecty.ComponentOrHTML {
 		elem.Div(
 			elem.Heading1(
 				vecty.Text(p.Name),
-			),
-			elem.Input(
-				vecty.Markup(
-					prop.Type(prop.TypeSubmit),
-					prop.Value("submit"),
-					event.Click(p.OnClick),
-				),
 			),
 			elem.Small(
 				vecty.Text(p.Description),
@@ -37,17 +29,9 @@ func (p *Todo) Render() vecty.ComponentOrHTML {
 			),
 			elem.Div(
 
-				vecty.Text("You are "),
+				vecty.Text("Active for "),
 				vecty.Text(p.GetAge()),
-				vecty.Text(" years old"),
-			),
-			elem.Div(
-
-				vecty.Text("gary"),
-				vecty.Text(p.GetSomething()),
-				vecty.Text("susan"),
-				vecty.Text(p.GetSomething()),
-				vecty.Text("bob"),
+				vecty.Text(" days"),
 			),
 		),
 	)

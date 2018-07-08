@@ -10,7 +10,7 @@ import (
 func (p *App) Render() vecty.ComponentOrHTML {
 	return elem.Body(
 		elem.Main(
-			vecty.Tag(
+			components.Nav(
 				"Nav",
 			),
 			elem.Div(

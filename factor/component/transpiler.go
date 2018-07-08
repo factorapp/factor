@@ -100,9 +100,35 @@ func (s *Transpiler) transcode() error {
 			vectyPackage := "github.com/gowasm/vecty/elem"
 			vectyParamater := ""
 			if !ok {
-				vectyFunction = "Tag"
-				vectyPackage = "github.com/gowasm/vecty"
-				vectyParamater = tag
+				fmt.Println(token.Name.Space, token.Name.Local)
+				if strings.HasPrefix(token.Name.Space, "components") {
+					// TODO: pass the right package name in
+					vectyPackage = "github.com/factorapp/factor/golden/components"
+					var component string
+					var qual bool
+					if s.packageName == "components" {
+
+						qual = false
+						component = strings.TrimLeft(tag, "components.")
+					} else {
+						qual = true
+						component = tag
+					}
+
+					fmt.Println(s.packageName, component, qual)
+					vectyFunction = component
+					vectyParamater = tag
+					if qual {
+						fmt.Println(component)
+						//						jen.Id("&components." + component + "{}")
+					}
+					//				jen.Id("&" + component + "{}")
+
+				} else {
+					vectyFunction = "Tag"
+					vectyPackage = "github.com/gowasm/vecty"
+					vectyParamater = tag
+				}
 			}
 			var outer error
 			q := jen.Qual(vectyPackage, vectyFunction).CustomFunc(call, func(g *jen.Group) {
@@ -166,7 +192,10 @@ func (s *Transpiler) transcode() error {
 								g.Qual("github.com/gowasm/vecty/event", strings.Title(field)).Call(
 									jen.Id("p." + v.Value),
 								)
-
+							case strings.HasPrefix(v.Name.Space, "components"):
+								fmt.Println(v.Name.Space, v.Name.Local, v.Value)
+								component := strings.TrimLeft(v.Name.Local, "components.")
+								jen.Id("&" + component + "{}")
 							case v.Name.Local == "xmlns":
 								g.Qual("github.com/gowasm/vecty", "Namespace").Call(
 									jen.Lit(v.Value),
@@ -348,11 +377,12 @@ func (s *Transpiler) transcode() error {
 	file.PackageComment("This file was created with https://github.com/factorapp/factor")
 	file.PackageComment("using https://jsgo.io/dave/html2vecty")
 	file.ImportNames(map[string]string{
-		"github.com/gowasm/vecty":       "vecty",
-		"github.com/gowasm/vecty/elem":  "elem",
-		"github.com/gowasm/vecty/prop":  "prop",
-		"github.com/gowasm/vecty/event": "event",
-		"github.com/gowasm/vecty/style": "style",
+		"github.com/gowasm/vecty":                         "vecty",
+		"github.com/gowasm/vecty/elem":                    "elem",
+		"github.com/gowasm/vecty/prop":                    "prop",
+		"github.com/gowasm/vecty/event":                   "event",
+		"github.com/gowasm/vecty/style":                   "style",
+		"_ github.com/factorapp/factor/golden/components": "components",
 	})
 	var elements []jen.Code
 	for {
