@@ -240,13 +240,11 @@ func (s *Transpiler) transcode() error {
 
 						fnCall := strings.TrimLeft(name, "{vecty-call:")
 						fnCall = strings.Replace(fnCall, "}", "", -1)
-						g.Add(
-							g.Qual("fmt", "Sprintf").Call(
-								jen.Lit("%s%s%s"),
-								jen.Lit(lhs),
-								jen.Id("p."+fnCall+"()"),
-								jen.Lit(rhs),
-							),
+						g.Qual("fmt", "Sprintf").Call(
+							jen.Lit("%s%s%s"),
+							jen.Lit(lhs),
+							jen.Id("p."+fnCall+"()"),
+							jen.Lit(rhs),
 						)
 
 					})

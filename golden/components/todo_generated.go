@@ -35,8 +35,7 @@ func (p *Todo) Render() vecty.ComponentOrHTML {
 			),
 			elem.Div(
 				vecty.Text(
-					fmt.Sprintf("%s %s %s", "You are ", p.GetAge(), " years old"),
-					fmt.Sprintf("%s %s %s", "You are ", p.GetAge(), " years old"),
+					fmt.Sprintf("%s%s%s", "You are ", p.GetAge(), " years old"),
 				),
 			),
 		),
