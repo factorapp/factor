@@ -16,16 +16,16 @@ func (p *Todo) Render() vecty.ComponentOrHTML {
 	return elem.Body(
 		elem.Div(
 			elem.Heading1(
-				vecty.Text("vecty-field:Name"),
+				vecty.Text(p.Name),
 			),
 			elem.Small(
-				vecty.Text("vecty-field:Description"),
+				vecty.Text(p.Description),
 			),
 			elem.Div(
 				vecty.Text("("),
 				elem.Anchor(
 					vecty.Markup(
-						prop.Href("{vecty-field:Permalink}"),
+						prop.Href(p.Permalink),
 					),
 					vecty.Text("Permalink"),
 				),

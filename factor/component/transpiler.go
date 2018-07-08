@@ -148,8 +148,9 @@ func (s *Transpiler) transcode() error {
 									jen.Lit(value),
 								)
 							case stringProps[v.Name.Local] != "":
-								if strings.HasPrefix(v.Value, "vecty-field:") {
-									field := strings.TrimLeft(v.Value, "vecty-field:")
+								if strings.HasPrefix(v.Value, "{vecty-field:") {
+									field := strings.TrimLeft(v.Value, "{vecty-field:")
+									field = field[:len(field)-1]
 									g.Qual("github.com/gowasm/vecty/prop", stringProps[v.Name.Local]).Call(
 										jen.Id("p." + field),
 									)
@@ -203,9 +204,11 @@ func (s *Transpiler) transcode() error {
 				fieldQualifier := func(name string) (*jen.Statement, error) {
 
 					fmt.Println("field qualifier:", str, name)
+					n := strings.TrimLeft(name, "{vecty-field:")
+					n = strings.TrimRight(n, "}")
 					return jen.Qual("github.com/gowasm/vecty", "Text").Call(
 						// TODO: struct qualifier
-						jen.Id("p." + name),
+						jen.Id("p." + n),
 					), nil
 				}
 				/*
@@ -263,7 +266,6 @@ func (s *Transpiler) transcode() error {
 						Separator: ",",
 					}
 					q := jen.CustomFunc(callOpts, func(g *jen.Group) {
-
 						crResult := callRegexp.FindAllStringIndex(str, -1)
 						index := 0
 						for matchNumber, match := range crResult {
@@ -277,7 +279,6 @@ func (s *Transpiler) transcode() error {
 								between = str[match[1]:crResult[matchNumber+1][0]]
 							}
 							after = str[match[1]:]
-							fmt.Println(before, between, after)
 							/*
 								g.Qual("fmt", "Sprintf").Call(
 									jen.Lit("%s%s%s"),
