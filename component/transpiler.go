@@ -17,6 +17,7 @@ import (
 
 	"github.com/aymerick/douceur/parser"
 	"github.com/dave/jennifer/jen"
+	"github.com/factorapp/factor/codegen/transpiler"
 )
 
 var callRegexp = regexp.MustCompile(`{vecty-call:([a-zA-Z0-9_\-]+)}`)
@@ -93,7 +94,7 @@ func (s *Transpiler) transcode() error {
 		switch token := token.(type) {
 		case xml.StartElement:
 			tag := token.Name.Local
-			vectyFunction, ok := elemNameMap[tag]
+			vectyFunction, ok := transpiler.ElemNames[tag]
 			vectyPackage := "github.com/gowasm/vecty/elem"
 			vectyParamater := ""
 			if !ok {
@@ -202,20 +203,20 @@ func (s *Transpiler) transcode() error {
 									jen.Lit(v.Value),
 								)
 
-							case boolProps[v.Name.Local] != "":
+							case transpiler.BoolProps[v.Name.Local] != "":
 								value := v.Value == "true"
-								g.Qual("github.com/gowasm/vecty/prop", boolProps[v.Name.Local]).Call(
+								g.Qual("github.com/gowasm/vecty/prop", transpiler.BoolProps[v.Name.Local]).Call(
 									jen.Lit(value),
 								)
-							case stringProps[v.Name.Local] != "":
+							case transpiler.StringProps[v.Name.Local] != "":
 								if strings.HasPrefix(v.Value, "{vecty-field:") {
 									field := strings.TrimLeft(v.Value, "{vecty-field:")
 									field = field[:len(field)-1]
-									g.Qual("github.com/gowasm/vecty/prop", stringProps[v.Name.Local]).Call(
+									g.Qual("github.com/gowasm/vecty/prop", transpiler.StringProps[v.Name.Local]).Call(
 										jen.Id("p." + field),
 									)
 								} else {
-									g.Qual("github.com/gowasm/vecty/prop", stringProps[v.Name.Local]).Call(
+									g.Qual("github.com/gowasm/vecty/prop", transpiler.StringProps[v.Name.Local]).Call(
 										jen.Lit(v.Value),
 									)
 								}
@@ -234,9 +235,9 @@ func (s *Transpiler) transcode() error {
 								g.Qual("github.com/gowasm/vecty", "Namespace").Call(
 									jen.Lit(v.Value),
 								)
-							case v.Name.Local == "type" && typeProps[v.Value] != "":
+							case v.Name.Local == "type" && transpiler.TypeProps[v.Value] != "":
 								g.Qual("github.com/gowasm/vecty/prop", "Type").Call(
-									jen.Qual("github.com/gowasm/vecty/prop", typeProps[v.Value]),
+									jen.Qual("github.com/gowasm/vecty/prop", transpiler.TypeProps[v.Value]),
 								)
 							default:
 								g.Qual("github.com/gowasm/vecty", "Attribute").Call(
@@ -489,11 +490,11 @@ func (s *Transpiler) transcode() error {
 	file.PackageComment("This file was created with https://github.com/factorapp/factor")
 	file.PackageComment("using https://jsgo.io/dave/html2vecty")
 	file.ImportNames(map[string]string{
-		"github.com/gowasm/vecty":                         "vecty",
-		"github.com/gowasm/vecty/elem":                    "elem",
-		"github.com/gowasm/vecty/prop":                    "prop",
-		"github.com/gowasm/vecty/event":                   "event",
-		"github.com/gowasm/vecty/style":                   "style",
+		"github.com/gowasm/vecty":                           "vecty",
+		"github.com/gowasm/vecty/elem":                      "elem",
+		"github.com/gowasm/vecty/prop":                      "prop",
+		"github.com/gowasm/vecty/event":                     "event",
+		"github.com/gowasm/vecty/style":                     "style",
 		"_ github.com/factorapp/factor/examples/components": "components",
 	})
 	var elements []jen.Code
@@ -563,161 +564,4 @@ func (s *Transpiler) transcode() error {
 
 	s.code = buf.String()
 	return nil
-}
-
-var elemNameMap = map[string]string{
-	"a":          "Anchor",
-	"abbr":       "Abbreviation",
-	"address":    "Address",
-	"area":       "Area",
-	"article":    "Article",
-	"aside":      "Aside",
-	"audio":      "Audio",
-	"b":          "Bold",
-	"base":       "Base",
-	"bdi":        "BidirectionalIsolation",
-	"bdo":        "BidirectionalOverride",
-	"blockquote": "BlockQuote",
-	"body":       "Body",
-	"br":         "Break",
-	"button":     "Button",
-	"canvas":     "Canvas",
-	"caption":    "Caption",
-	"cite":       "Citation",
-	"code":       "Code",
-	"col":        "Column",
-	"colgroup":   "ColumnGroup",
-	"data":       "Data",
-	"datalist":   "DataList",
-	"dd":         "Description",
-	"del":        "DeletedText",
-	"details":    "Details",
-	"dfn":        "Definition",
-	"dialog":     "Dialog",
-	"div":        "Div",
-	"dl":         "DescriptionList",
-	"dt":         "DefinitionTerm",
-	"em":         "Emphasis",
-	"embed":      "Embed",
-	"fieldset":   "FieldSet",
-	"figcaption": "FigureCaption",
-	"figure":     "Figure",
-	"footer":     "Footer",
-	"form":       "Form",
-	"h1":         "Heading1",
-	"h2":         "Heading2",
-	"h3":         "Heading3",
-	"h4":         "Heading4",
-	"h5":         "Heading5",
-	"h6":         "Heading6",
-	"header":     "Header",
-	"hgroup":     "HeadingsGroup",
-	"hr":         "HorizontalRule",
-	"i":          "Italic",
-	"iframe":     "InlineFrame",
-	"img":        "Image",
-	"input":      "Input",
-	"ins":        "InsertedText",
-	"kbd":        "KeyboardInput",
-	"label":      "Label",
-	"legend":     "Legend",
-	"li":         "ListItem",
-	"link":       "Link",
-	"main":       "Main",
-	"map":        "Map",
-	"mark":       "Mark",
-	"meta":       "Meta",
-	"meter":      "Meter",
-	"nav":        "Navigation",
-	"noscript":   "NoScript",
-	"object":     "Object",
-	"ol":         "OrderedList",
-	"optgroup":   "OptionsGroup",
-	"option":     "Option",
-	"output":     "Output",
-	"p":          "Paragraph",
-	"param":      "Parameter",
-	"picture":    "Picture",
-	"pre":        "Preformatted",
-	"progress":   "Progress",
-	"q":          "Quote",
-	"rp":         "RubyParenthesis",
-	"rt":         "RubyText",
-	"rtc":        "RubyTextContainer",
-	"ruby":       "Ruby",
-	"s":          "Strikethrough",
-	"samp":       "Sample",
-	"script":     "Script",
-	"section":    "Section",
-	"select":     "Select",
-	"slot":       "Slot",
-	"small":      "Small",
-	"source":     "Source",
-	"span":       "Span",
-	"strong":     "Strong",
-	"style":      "Style",
-	"sub":        "Subscript",
-	"summary":    "Summary",
-	"sup":        "Superscript",
-	"table":      "Table",
-	"tbody":      "TableBody",
-	"td":         "TableData",
-	"template":   "Template",
-	"textarea":   "TextArea",
-	"tfoot":      "TableFoot",
-	"th":         "TableHeader",
-	"thead":      "TableHead",
-	"time":       "Time",
-	"title":      "Title",
-	"tr":         "TableRow",
-	"track":      "Track",
-	"u":          "Underline",
-	"ul":         "UnorderedList",
-	"var":        "Variable",
-	"video":      "Video",
-	"wbr":        "WordBreakOpportunity",
-}
-
-var typeProps = map[string]string{
-	"button":         "TypeButton",
-	"checkbox":       "TypeCheckbox",
-	"color":          "TypeColor",
-	"date":           "TypeDate",
-	"datetime":       "TypeDatetime",
-	"datetime-local": "TypeDatetimeLocal",
-	"email":          "TypeEmail",
-	"file":           "TypeFile",
-	"hidden":         "TypeHidden",
-	"image":          "TypeImage",
-	"month":          "TypeMonth",
-	"number":         "TypeNumber",
-	"password":       "TypePassword",
-	"radio":          "TypeRadio",
-	"range":          "TypeRange",
-	"min":            "TypeMin",
-	"max":            "TypeMax",
-	"value":          "TypeValue",
-	"step":           "TypeStep",
-	"reset":          "TypeReset",
-	"search":         "TypeSearch",
-	"submit":         "TypeSubmit",
-	"tel":            "TypeTel",
-	"text":           "TypeText",
-	"time":           "TypeTime",
-	"url":            "TypeUrl",
-	"week":           "TypeWeek",
-}
-
-var boolProps = map[string]string{
-	"autofocus": "Autofocus",
-	"checked":   "Checked",
-}
-
-var stringProps = map[string]string{
-	"for":         "For",
-	"href":        "Href",
-	"id":          "ID",
-	"placeholder": "Placeholder",
-	"src":         "Src",
-	"value":       "Value",
 }
