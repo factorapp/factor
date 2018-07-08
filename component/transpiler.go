@@ -534,12 +534,21 @@ func (s *Transpiler) transcode() error {
 			jen.Qual("github.com/gowasm/vecty", "Core"),
 		)
 	}
-	file.Func().Params(jen.Id("p").Op("*").Id(s.componentName)).Id("Render").Params().Qual("github.com/gowasm/vecty", "ComponentOrHTML").Block(
-		jen.Return(
-			// TODO: wrap in if - only body for a "route"
-			jen.Qual("github.com/gowasm/vecty/elem", "Body").Custom(call, elements...),
-		),
-	)
+	if s.packageName == "routes" {
+		file.Func().Params(jen.Id("p").Op("*").Id(s.componentName)).Id("Render").Params().Qual("github.com/gowasm/vecty", "ComponentOrHTML").Block(
+			jen.Return(
+				// TODO: wrap in if - only body for a "route"
+				jen.Qual("github.com/gowasm/vecty/elem", "Body").Custom(call, elements...),
+			),
+		)
+	} else {
+		file.Func().Params(jen.Id("p").Op("*").Id(s.componentName)).Id("Render").Params().Qual("github.com/gowasm/vecty", "ComponentOrHTML").Block(
+			jen.Return(
+				// TODO: wrap in if - only body for a "route"
+				jen.Qual("github.com/gowasm/vecty/elem", "Markup").Custom(call, elements...),
+			),
+		)
+	}
 	/*if len(elements) == 1 {
 		file.Var().Id("Element").Op("=").Add(elements[0])
 	} else if len(elements) > 1 {
