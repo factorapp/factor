@@ -1,17 +1,19 @@
 package transpiler
 
 import (
+	"encoding/xml"
 	"fmt"
 
 	"github.com/dave/jennifer/jen"
 )
 
-func ComponentElement(appPackage, componentName string) *jen.Statement {
+func ComponentElement(appPackage, componentName string, token *xml.StartElement) *jen.Statement {
 	var component string
 	var qual bool
 
-	vectyFunction = component
-	vectyParamater = tag
+	vectyPackage := appPackage + "/components"
+	// vectyFunction = component
+	// vectyParamater = tag
 	if qual {
 		fmt.Println(component)
 		baseDecl := jen.Id("&").Add(jen.Qual(vectyPackage, "").Add(
@@ -33,7 +35,7 @@ func ComponentElement(appPackage, componentName string) *jen.Statement {
 
 		baseDecl.Block(block)
 
-		return baseDecl, nil
+		return baseDecl
 	}
 	baseDecl := jen.Id("&").Add(
 		jen.Id(component),
