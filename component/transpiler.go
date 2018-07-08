@@ -56,9 +56,6 @@ func (s *Transpiler) read() error {
 	s.html = string(bb)
 	return nil
 }
-func (s *Transpiler) Html() string {
-	return s.html
-}
 
 func (s *Transpiler) Code() string {
 	return s.code
