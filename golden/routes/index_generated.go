@@ -13,12 +13,7 @@ import (
 func (p *Index) Render() vecty.ComponentOrHTML {
 	return elem.Body(
 		elem.Main(
-			components.Nav(
-				"Nav",
-				vecty.Markup(
-					vecty.Attribute("MyProp", "blue"),
-				),
-			),
+			&components.Nav{},
 			elem.Heading1(
 				vecty.Text("Great success!"),
 			),

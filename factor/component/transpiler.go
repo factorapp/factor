@@ -107,7 +107,7 @@ func (s *Transpiler) transcode() error {
 					var component string
 					var qual bool
 					if s.packageName == "components" {
-
+						vectyPackage = ""
 						qual = false
 						component = strings.TrimLeft(tag, "components.")
 					} else {
