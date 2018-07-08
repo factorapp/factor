@@ -3,7 +3,7 @@
 package routes
 
 import (
-	components "github.com/factorapp/factor/golden/components"
+	components "github.com/factorapp/factor/examples/components"
 	"github.com/gowasm/vecty"
 	"github.com/gowasm/vecty/elem"
 )

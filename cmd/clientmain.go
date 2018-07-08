@@ -4,7 +4,7 @@ var clMainTemplate = `// build +js,wasm
 package main
 
 import (
-	"github.com/factorapp/factor/golden/routes"
+	"github.com/factorapp/factor/examples/routes"
 	"github.com/gowasm/router"
 	"github.com/gowasm/vecty"
 )
