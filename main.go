@@ -14,7 +14,7 @@
 
 package main
 
-import "github.com/factorapp/factor/factor/cmd"
+import "github.com/factorapp/factor/cmd"
 
 func main() {
 	cmd.Execute()
