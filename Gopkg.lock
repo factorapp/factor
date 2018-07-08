@@ -41,6 +41,12 @@
   version = "v0.1.2"
 
 [[projects]]
+  name = "github.com/gobuffalo/envy"
+  packages = ["."]
+  revision = "2d0f467653f3d961ce9ada4d32a230bdcb3bfe11"
+  version = "v1.6.3"
+
+[[projects]]
   branch = "master"
   name = "github.com/gopherjs/gopherjs"
   packages = ["js"]
@@ -105,6 +111,12 @@
   packages = ["."]
   revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
   version = "v1.0"
+
+[[projects]]
+  name = "github.com/joho/godotenv"
+  packages = ["."]
+  revision = "a79fa1e548e2c689c241d10173efd51e5d689d5b"
+  version = "v1.2.0"
 
 [[projects]]
   name = "github.com/magiconair/properties"
@@ -240,6 +252,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "d13ae2dac5042690a3771119de7e6ca14eacd39a8cac9af11d515a708c6bf96c"
+  inputs-digest = "3dbbbb351b94c863e5a516855c9e7e16bd705fe90380ff1b7f3030af3f8df463"
   solver-name = "gps-cdcl"
   solver-version = 1
