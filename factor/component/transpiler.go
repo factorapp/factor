@@ -83,8 +83,8 @@ func (s *Transpiler) transcode() error {
 		Separator: ",",
 	}*/
 
-	callRegexp := regexp.MustCompile(`{vecty-call:[a-zA-Z0-9_\-]+}`)
-	fieldRegexp := regexp.MustCompile(`{vecty-field:[a-zA-Z0-9_\-]+}`)
+	callRegexp := regexp.MustCompile(`{vecty-call:([a-zA-Z0-9_\-]+)}`)
+	fieldRegexp := regexp.MustCompile(`{vecty-field:([a-zA-Z0-9_\-]+})`)
 
 	var transcode func(*xml.Decoder) (jen.Code, error)
 	transcode = func(decoder *xml.Decoder) (code jen.Code, err error) {
@@ -231,24 +231,87 @@ func (s *Transpiler) transcode() error {
 				// build up a string of text statements for static text, and
 				// generated calls or field accesses
 				if hasCall {
-					q := jen.Qual("github.com/gowasm/vecty", "Text").CustomFunc(call, func(g *jen.Group) {
-						fmt.Println("Found a call")
-						crResult := callRegexp.FindStringIndex(str)
-						lhs := str[:crResult[0]]
-						rhs := str[crResult[1]:]
-						name := str[crResult[0]:crResult[1]]
 
-						fnCall := strings.TrimLeft(name, "{vecty-call:")
-						fnCall = strings.Replace(fnCall, "}", "", -1)
-						g.Qual("fmt", "Sprintf").Call(
-							jen.Lit("%s%s%s"),
-							jen.Lit(lhs),
-							jen.Id("p."+fnCall+"()"),
-							jen.Lit(rhs),
-						)
+					/*
+						re := regexp.MustCompile(`({vecty-call:[a-zA-Z0-9]+})`)
+						t := "{vecty-call:Alone}thing{vecty-call:Thing}stuff{vecty-call:Stuff}other{vecty-call:Blue}"
+						crResult := re.FindAllStringIndex(t, -1)
+						index := 0
+						for matchNumber, match := range crResult {
+							fmt.Println(match)
+							fmt.Println("Before:", t[index:match[0]])
+							fmt.Println("Match:", t[match[0]:match[1]])
+							fmt.Println(re.FindAllStringSubmatch(t, index))
+							if matchNumber < len(crResult)-1 {
+								// there's another match
 
+								fmt.Println(matchNumber, len(crResult), index, crResult, "There is another")
+								fmt.Println("next Result:",crResult[matchNumber+1][0])
+								fmt.Println(t[match[1]:])
+								fmt.Println(crResult[matchNumber+1])
+								fmt.Println("Internal After:", t[match[1]:crResult[matchNumber+1][0]])
+							}
+
+							fmt.Println("After:", t[match[1]:])
+							index = match[1]
+						}
+					*/
+					callOpts := jen.Options{
+						Close:     "",
+						Multi:     true,
+						Open:      "",
+						Separator: ",",
+					}
+					q := jen.CustomFunc(callOpts, func(g *jen.Group) {
+
+						crResult := callRegexp.FindAllStringIndex(str, -1)
+						index := 0
+						for matchNumber, match := range crResult {
+							var before, between, after string
+							before = str[index:match[0]]
+							fnCall := str[match[0]:match[1]]
+							fnCall = strings.TrimLeft(fnCall, "{vecty-call:")
+							fnCall = strings.Replace(fnCall, "}", "", -1)
+							if matchNumber < len(crResult)-1 {
+								// there's another match
+								between = str[match[1]:crResult[matchNumber+1][0]]
+							}
+							after = str[match[1]:]
+							fmt.Println(before, between, after)
+							/*
+								g.Qual("fmt", "Sprintf").Call(
+									jen.Lit("%s%s%s"),
+									jen.Lit(lhs),
+									jen.Id("p."+fnCall+"()"),
+									jen.Lit(rhs),
+								)
+							*/
+							if before != "" && !strings.Contains(before, "vecty-call") {
+								g.Add(
+									jen.Qual("github.com/gowasm/vecty", "Text").Call(
+										jen.Lit(before),
+									))
+							}
+							g.Add(
+								jen.Qual("github.com/gowasm/vecty", "Text").Call(
+									jen.Id("p." + fnCall + "()"),
+								))
+							if between != "" && !strings.Contains(between, "vecty-call") {
+								g.Add(
+									jen.Qual("github.com/gowasm/vecty", "Text").Call(
+										jen.Lit(between),
+									))
+							}
+							if after != "" && !strings.Contains(after, "vecty-call") {
+								g.Add(
+									jen.Qual("github.com/gowasm/vecty", "Text").Call(
+										jen.Lit(after),
+									))
+							}
+						}
 					})
 					return q, nil
+
 				}
 				if hasField {
 					fmt.Println("Found a field")
