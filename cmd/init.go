@@ -82,7 +82,7 @@ to quickly create a Cobra application.`,
 func populateApp(cwd, appPkg string) error {
 	filename := "index.html"
 	filePath := filepath.Join(cwd, appName, "app", filename)
-	err := writeTemplate(filePath, indexTemplate)
+	err := writeTemplate(filePath, codegen.IndexHTML)
 	if err != nil {
 		return err
 	}
