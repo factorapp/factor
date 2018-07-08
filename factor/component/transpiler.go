@@ -196,26 +196,68 @@ func (s *Transpiler) transcode() error {
 		case xml.CharData:
 			str := string(token)
 			hasCall := callRegexp.MatchString(str)
-			hasField := callRegexp.MatchString(str)
+			hasField := fieldRegexp.MatchString(str)
 			hasSpecial := hasCall || hasField
 
 			if hasSpecial {
-				fieldQualifier := func(name string) *jen.Statement {
+				fieldQualifier := func(name string) (*jen.Statement, error) {
+
+					fmt.Println("field qualifier:", str, name)
 					return jen.Qual("github.com/gowasm/vecty", "Text").Call(
 						// TODO: struct qualifier
 						jen.Id("p." + name),
-					)
+					), nil
 				}
-				callQualifier := func(name string) *jen.Statement {
-					fnCall := strings.TrimLeft(str, "vecty-call:")
-					return jen.Qual("github.com/gowasm/vecty", "Text").Call(
-						jen.Id("p." + fnCall + "()"),
-					)
-				}
+				/*
+					callQualifier := func(lhs, name, rhs string) (*jen.Statement, error) {
+						fmt.Println("call qualifier:", str, name)
+						fnCall := strings.TrimLeft(name, "{vecty-call:")
+						fnCall = strings.Replace(fnCall, "}", "", -1)
+						stmt := jen.Add(
+							jen.Qual("github.com/gowasm/vecty", "Text").Call(
+								jen.Lit(lhs),
+							))
+						stmt.Add(jen.Qual("github.com/gowasm/vecty", "Text").Call(
+							jen.Id("p." + fnCall + "()"),
+						))
+						stmt.Add(jen.Qual("github.com/gowasm/vecty", "Text").Call(
+							jen.Lit(rhs),
+						))
+						return stmt, nil
 
+					}
+				*/
 				// TODO: find next index for each field and call regexp.
 				// build up a string of text statements for static text, and
 				// generated calls or field accesses
+				if hasCall {
+					q := jen.Qual("github.com/gowasm/vecty", "Text").CustomFunc(call, func(g *jen.Group) {
+						fmt.Println("Found a call")
+						crResult := callRegexp.FindStringIndex(str)
+						lhs := str[:crResult[0]]
+						rhs := str[crResult[1]:]
+						name := str[crResult[0]:crResult[1]]
+
+						fnCall := strings.TrimLeft(name, "{vecty-call:")
+						fnCall = strings.Replace(fnCall, "}", "", -1)
+						g.Add(
+							g.Qual("fmt", "Sprintf").Call(
+								jen.Lit("%s%s%s"),
+								jen.Lit(lhs),
+								jen.Id("p."+fnCall+"()"),
+								jen.Lit(rhs),
+							),
+						)
+
+					})
+					return q, nil
+				}
+				if hasField {
+					fmt.Println("Found a field")
+					fqResult := fieldRegexp.FindString(str)
+					fmt.Println("field result:", fqResult)
+					return fieldQualifier((fqResult))
+				}
 			}
 			s := strings.TrimSpace(string(token))
 			if s == "" {

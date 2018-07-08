@@ -3,6 +3,8 @@
 package components
 
 import (
+	"fmt"
+
 	"github.com/gowasm/vecty"
 	"github.com/gowasm/vecty/elem"
 	"github.com/gowasm/vecty/prop"
@@ -32,7 +34,10 @@ func (p *Todo) Render() vecty.ComponentOrHTML {
 				vecty.Text(")"),
 			),
 			elem.Div(
-				vecty.Text("You are {vecty-call:GetAge} years old"),
+				vecty.Text(
+					fmt.Sprintf("%s %s %s", "You are ", p.GetAge(), " years old"),
+					fmt.Sprintf("%s %s %s", "You are ", p.GetAge(), " years old"),
+				),
 			),
 		),
 	)
