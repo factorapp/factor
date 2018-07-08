@@ -19,6 +19,9 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/factorapp/factor/component"
+	"github.com/factorapp/factor/model"
+	"github.com/factorapp/factor/route"
 	"github.com/spf13/cobra"
 )
 
@@ -49,19 +52,21 @@ func build() error {
 	}
 
 	dir := filepath.Join(cwd, "components")
-	err = processComponents(dir, "components")
+	// err = component.ProcessAll(dir, "components")
+	err = component.ProcessAll(dir)
 	if err != nil {
 		return err
 	}
 
 	dir = filepath.Join(cwd, "routes")
-	err = processComponents(dir, "routes")
+	// err = component.ProcessAll(dir, "routes")
+	err = route.ProcessAll(dir)
 	if err != nil {
 		return err
 	}
 
 	dir = filepath.Join(cwd, "models")
-	err = processModels(dir)
+	err = model.ProcessAll(dir)
 	if err != nil {
 		return err
 	}

@@ -12,7 +12,7 @@ import (
 
 type Nav struct {
 	vecty.Core
-	MyProp      string ` + "`" + "vecty:" + `"Prop"
+	MyProp      string ` + "`" + "vecty:" + `"Prop"` + "`" + `
 	CurrentPath string
 }
 `

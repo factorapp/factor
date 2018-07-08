@@ -19,6 +19,9 @@ import (
 	"github.com/dave/jennifer/jen"
 )
 
+var callRegexp = regexp.MustCompile(`{vecty-call:([a-zA-Z0-9_\-]+)}`)
+var fieldRegexp = regexp.MustCompile(`{vecty-field:([a-zA-Z0-9_\-]+})`)
+
 func NewTranspiler(r io.ReadCloser, createStruct bool, componentName, packageName string) (*Transpiler, error) {
 	s := &Transpiler{
 		reader:        r,
@@ -53,9 +56,6 @@ func (s *Transpiler) read() error {
 	s.html = string(bb)
 	return nil
 }
-func (s *Transpiler) Html() string {
-	return s.html
-}
 
 func (s *Transpiler) Code() string {
 	return s.code
@@ -82,9 +82,6 @@ func (s *Transpiler) transcode() error {
 		Open:      "{",
 		Separator: ",",
 	}*/
-
-	callRegexp := regexp.MustCompile(`{vecty-call:([a-zA-Z0-9_\-]+)}`)
-	fieldRegexp := regexp.MustCompile(`{vecty-field:([a-zA-Z0-9_\-]+})`)
 
 	var transcode func(*xml.Decoder) (jen.Code, error)
 	transcode = func(decoder *xml.Decoder) (code jen.Code, err error) {
@@ -537,12 +534,21 @@ func (s *Transpiler) transcode() error {
 			jen.Qual("github.com/gowasm/vecty", "Core"),
 		)
 	}
-	file.Func().Params(jen.Id("p").Op("*").Id(s.componentName)).Id("Render").Params().Qual("github.com/gowasm/vecty", "ComponentOrHTML").Block(
-		jen.Return(
-			// TODO: wrap in if - only body for a "route"
-			jen.Qual("github.com/gowasm/vecty/elem", "Body").Custom(call, elements...),
-		),
-	)
+	if s.packageName == "routes" {
+		file.Func().Params(jen.Id("p").Op("*").Id(s.componentName)).Id("Render").Params().Qual("github.com/gowasm/vecty", "ComponentOrHTML").Block(
+			jen.Return(
+				// TODO: wrap in if - only body for a "route"
+				jen.Qual("github.com/gowasm/vecty/elem", "Body").Custom(call, elements...),
+			),
+		)
+	} else {
+		file.Func().Params(jen.Id("p").Op("*").Id(s.componentName)).Id("Render").Params().Qual("github.com/gowasm/vecty", "ComponentOrHTML").Block(
+			jen.Return(
+				// TODO: wrap in if - only body for a "route"
+				jen.Qual("github.com/gowasm/vecty/elem", "Markup").Custom(call, elements...),
+			),
+		)
+	}
 	/*if len(elements) == 1 {
 		file.Var().Id("Element").Op("=").Add(elements[0])
 	} else if len(elements) > 1 {
