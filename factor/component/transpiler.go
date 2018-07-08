@@ -120,9 +120,30 @@ func (s *Transpiler) transcode() error {
 					vectyParamater = tag
 					if qual {
 						fmt.Println(component)
-						//						jen.Id("&components." + component + "{}")
+						baseDecl := jen.Id("&").Add(jen.Qual(vectyPackage, "").Add(
+							jen.Id(component),
+						))
+						if len(token.Attr) > 0 {
+							attrCall := jen.Options{
+								Close:     "",
+								Multi:     true,
+								Open:      "",
+								Separator: ",",
+							}
+							block := jen.CustomFunc(attrCall, func(g *jen.Group) {
+								for _, v := range token.Attr {
+									fmt.Println(v.Name.Local)
+									fmt.Println(v.Value)
+									g.Id(v.Name.Local).Id(":").Lit(v.Value).Id(",")
+								}
+							})
+
+							baseDecl.Block(block)
+						}
+
+						return baseDecl, nil
 					}
-					//				jen.Id("&" + component + "{}")
+					return jen.Id("&" + component + "{}"), nil
 
 				} else {
 					vectyFunction = "Tag"

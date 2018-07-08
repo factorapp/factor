@@ -7,7 +7,7 @@ import (
 
 type Nav struct {
 	vecty.Core
-	MyProp      string
+	MyProp      string `vecty:"Prop"`
 	CurrentPath string
 }
 

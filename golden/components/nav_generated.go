@@ -13,7 +13,7 @@ func (p *Nav) Render() vecty.ComponentOrHTML {
 			elem.UnorderedList(
 				elem.ListItem(
 
-					vecty.Text("This is an item"),
+					vecty.Text("This a component property: "),
 					vecty.Text(p.MyProp),
 				),
 				elem.ListItem(
