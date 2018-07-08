@@ -12,7 +12,7 @@ func (p *Nav) Render() vecty.ComponentOrHTML {
 		elem.Navigation(
 			elem.UnorderedList(
 				elem.ListItem(
-					vecty.Text("This is an item"),
+					vecty.Text(p.MyProp),
 				),
 				elem.ListItem(
 					vecty.Text("This is another item"),
