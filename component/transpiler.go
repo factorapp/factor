@@ -22,11 +22,12 @@ import (
 var callRegexp = regexp.MustCompile(`{vecty-call:([a-zA-Z0-9_\-]+)}`)
 var fieldRegexp = regexp.MustCompile(`{vecty-field:([a-zA-Z0-9_\-]+})`)
 
-func NewTranspiler(r io.ReadCloser, createStruct bool, componentName, packageName string) (*Transpiler, error) {
+func NewTranspiler(r io.ReadCloser, createStruct bool, componentName, packageName, packageImport string) (*Transpiler, error) {
 	s := &Transpiler{
 		reader:        r,
 		createStruct:  createStruct,
 		packageName:   packageName,
+		packageImport: packageImport,
 		componentName: componentName,
 	}
 	err := s.read()
@@ -45,6 +46,7 @@ type Transpiler struct {
 	createStruct  bool
 	componentName string
 	packageName   string
+	packageImport string
 	html, code    string
 }
 
@@ -100,7 +102,7 @@ func (s *Transpiler) transcode() error {
 				fmt.Println(token.Name.Space, token.Name.Local)
 				if strings.HasPrefix(token.Name.Space, "components") {
 					// TODO: pass the right package name in
-					vectyPackage = "github.com/factorapp/factor/examples/components"
+					vectyPackage = s.packageImport + "/components" // HACK
 					var component string
 					var qual bool
 					if s.packageName == "components" {
@@ -489,12 +491,11 @@ func (s *Transpiler) transcode() error {
 	file.PackageComment("This file was created with https://github.com/factorapp/factor")
 	file.PackageComment("using https://jsgo.io/dave/html2vecty")
 	file.ImportNames(map[string]string{
-		"github.com/gowasm/vecty":                         "vecty",
-		"github.com/gowasm/vecty/elem":                    "elem",
-		"github.com/gowasm/vecty/prop":                    "prop",
-		"github.com/gowasm/vecty/event":                   "event",
-		"github.com/gowasm/vecty/style":                   "style",
-		"_ github.com/factorapp/factor/examples/components": "components",
+		"github.com/gowasm/vecty":       "vecty",
+		"github.com/gowasm/vecty/elem":  "elem",
+		"github.com/gowasm/vecty/prop":  "prop",
+		"github.com/gowasm/vecty/event": "event",
+		"github.com/gowasm/vecty/style": "style",
 	})
 	var elements []jen.Code
 	for {
