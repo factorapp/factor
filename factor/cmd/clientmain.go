@@ -1,4 +1,6 @@
-// build +js,wasm
+package cmd
+
+var clMainTemplate = `// build +js,wasm
 package main
 
 import (
@@ -32,3 +34,4 @@ func main() {
 	r.Start()
 	<-c
 }
+`

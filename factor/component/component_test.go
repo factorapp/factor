@@ -73,7 +73,7 @@ func TestParse(t *testing.T) {
 	}
 }
 func TestQuoted(t *testing.T) {
-	c := parse(t)
+	c := parseComponent(t)
 	qs := c.QuotedStyle()
 	if strings.Compare(qs[0:1], "`") != 0 {
 		t.Errorf("expected style to start with backtick, got: %s", qs[0:1])
@@ -83,7 +83,7 @@ func TestQuoted(t *testing.T) {
 		t.Errorf("expected template to start with backtick, got: %s", qt[len(qt)-1:len(qt)])
 	}
 }
-func parse(t *testing.T) *Component {
+func parseComponent(t *testing.T) *Component {
 
 	good := goodTpl + "\n" + goodStyle
 	b := bytes.NewBuffer([]byte(good))
@@ -105,7 +105,7 @@ func TestTransformUnparsed(t *testing.T) {
 }
 
 func TestTransform(t *testing.T) {
-	c := parse(t)
+	c := parseComponent(t)
 	c.Package = "mypackage"
 	b := new(bytes.Buffer)
 	err := c.Transform(b)

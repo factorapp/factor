@@ -1,51 +1,24 @@
+// This file was created with https://github.com/factorapp/factor
+// using https://jsgo.io/dave/html2vecty
 package routes
 
 import (
-	"fmt"
-
-	"github.com/bketelsen/factor/golden/models"
-	"github.com/bketelsen/factor/markup"
-	"github.com/satori/go.uuid"
+	"github.com/gowasm/vecty"
+	"github.com/gowasm/vecty/elem"
 )
 
 type Todos struct {
-	List []*models.Todo
+	vecty.Core
 }
 
-//    <Todo Name="{{.Name}}" Description="{{.Description}}" Permalink="{{.Permalink}}"/>
-var TodosTemplate = `<div class="todos">
-{{ range .List }}
-<Todo Name="{{.Name}}" Description="{{.Description}}" Permalink="{{.Permalink}}"/>
-{{ end }}
-</div>`
-var TodosStyles = ``
-
-func (t *Todos) Render() string {
-	tdc := new(models.TodoClient)
-	uid := uuid.Must(uuid.NewV4())
-	fmt.Println(uid.String())
-	todo, err := tdc.Get(uid)
-	if err != nil {
-		fmt.Println(err)
-		panic(err)
-	}
-
-	/*	todo := &models.Todo{
-			Name:        "Brian",
-			Description: "Des",
-			Permalink:   "/1",
-		}
-	*/
-	t.List = []*models.Todo{todo}
-	return TodosTemplate
-}
-func (t *Todos) Style() string {
-	return TodosStyles
-}
-func (t *Todos) OnMount() {
-
-}
-
-func init() {
-	markup.Register(&Todos{})
+func (p *Todos) Render() vecty.ComponentOrHTML {
+	return elem.Body(
+		elem.Div(
+			vecty.Markup(
+				vecty.Class("todos"),
+			),
+			vecty.Text("{{ range .Todos }}"),
+			vecty.Text("{{ .TodoComponent . }}\n    {{ end }}"),
+		),
+	)
 }

@@ -1,23 +1,23 @@
+// This file was created with https://github.com/factorapp/factor
+// using https://jsgo.io/dave/html2vecty
 package routes
 
 import (
-	"github.com/bketelsen/factor/markup"
+	"github.com/gowasm/vecty"
+	"github.com/gowasm/vecty/elem"
 )
 
 type About struct {
+	vecty.Core
 }
 
-var AboutTemplate = `<main><h1>About this site</h1>
-
-<p>This is the 'about' page. There's not much here.</p></main>`
-var AboutStyles = ``
-
-func (t *About) Render() string {
-	return AboutTemplate
-}
-func (t *About) Style() string {
-	return AboutStyles
-}
-func init() {
-	markup.Register(&About{})
+func (p *About) Render() vecty.ComponentOrHTML {
+	return elem.Body(
+		elem.Heading1(
+			vecty.Text("About this site"),
+		),
+		elem.Paragraph(
+			vecty.Text("This is the 'about' page. There's not much here."),
+		),
+	)
 }

@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/bketelsen/factor/factor/model"
+	"github.com/factorapp/factor/factor/model"
 )
 
 func processModels(base string) error {
@@ -79,8 +79,7 @@ func processModels(base string) error {
 
 func isModel(info os.FileInfo) bool {
 	// ignore generated files
-	if 
-		strings.HasSuffix(info.Name(), "_generated.go") || 
+	if strings.HasSuffix(info.Name(), "_generated.go") ||
 		strings.HasSuffix(info.Name(), "_server.go") ||
 		strings.HasSuffix(info.Name(), "_types.go") ||
 		strings.HasSuffix(info.Name(), "_client.go") {

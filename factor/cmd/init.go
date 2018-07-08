@@ -17,8 +17,10 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
+	"text/template"
 
 	"github.com/spf13/cobra"
 )
@@ -37,7 +39,7 @@ var directories = []string{
 // initCmd represents the init command
 var initCmd = &cobra.Command{
 	Use:   "init",
-	Short: "A brief description of your command",
+	Short: "initialize a new factor application",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
@@ -64,9 +66,89 @@ to quickly create a Cobra application.`,
 			return
 		}
 		// put the new files there
+		populateApp(cwd)
 	},
 }
 
+func populateApp(cwd string) error {
+	filename := "index.html"
+	filePath := filepath.Join(cwd, appName, "app", filename)
+	err := writeTemplate(filePath, indexTemplate)
+	if err != nil {
+		return err
+	}
+
+	filename = "wasm_exec.js"
+	filePath = filepath.Join(cwd, appName, "app", filename)
+	err = writeTemplate(filePath, wasmTemplate)
+	if err != nil {
+		return err
+	}
+	filename = "global.css"
+	filePath = filepath.Join(cwd, appName, "assets", filename)
+	err = writeTemplate(filePath, gcssTemplate)
+	if err != nil {
+		return err
+	}
+	filename = "main.go"
+	filePath = filepath.Join(cwd, appName, "client", filename)
+	err = writeTemplate(filePath, clMainTemplate)
+	if err != nil {
+		return err
+	}
+	filename = "Nav.html"
+	filePath = filepath.Join(cwd, appName, "components", filename)
+	err = writeTemplate(filePath, compNavTemplate)
+	if err != nil {
+		return err
+	}
+	filename = "nav.go"
+	filePath = filepath.Join(cwd, appName, "components", filename)
+	err = writeTemplate(filePath, compNavGoTemplate)
+	if err != nil {
+		return err
+	}
+	filename = "Index.html"
+	filePath = filepath.Join(cwd, appName, "routes", filename)
+	err = writeTemplate(filePath, routesTemplate)
+	if err != nil {
+		return err
+	}
+	filename = "index.go"
+	filePath = filepath.Join(cwd, appName, "routes", filename)
+	err = writeTemplate(filePath, routesGoTemplate)
+	if err != nil {
+		return err
+	}
+	filename = "main.go"
+	filePath = filepath.Join(cwd, appName, "server", filename)
+	err = writeTemplate(filePath, serverGoTemplate)
+	if err != nil {
+		return err
+	}
+	filename = "Makefile"
+	filePath = filepath.Join(cwd, appName, filename)
+	err = writeTemplate(filePath, makefileTemplate)
+	if err != nil {
+		return err
+	}
+	return err
+}
+func writeTemplate(filePath string, templateName string) error {
+	gofile, err := os.Create(filePath)
+	if err != nil {
+		log.Println("ERROR", err)
+		return err
+	}
+	defer gofile.Close()
+	tpl := template.Must(template.New("component").Parse(templateName))
+	// TODO - get the gopath of cwd and pass it in a context below to this call
+	err = tpl.Execute(gofile, nil)
+	if err != nil {
+		return err
+	}
+	return nil
+}
 func makeDirectories(cwd string) error {
 	for _, dir := range directories {
 		err := os.MkdirAll(filepath.Join(cwd, appName, dir), 0755)

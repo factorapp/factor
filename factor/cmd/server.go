@@ -1,4 +1,6 @@
-// build !js,wasm
+package cmd
+
+var serverGoTemplate = `// build !js,wasm
 package main
 
 import (
@@ -43,3 +45,4 @@ func jsHandler(w http.ResponseWriter, r *http.Request) {
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "./app/index.html")
 }
+`

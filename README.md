@@ -19,3 +19,7 @@ Factor is heavily inspired by [Svelte and Sapper](https://sapper.svelte.technolo
 │ ├ _error.html
 │ └ index.html
 ```
+
+## Notes
+
+* Factor enforces very strict HTML rules.  `<br>` will break.  Close all self-closing tags properly: `<br />`.  Failing to do this will result in an error like `element input closed by form` in your generated Go files.

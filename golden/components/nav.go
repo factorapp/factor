@@ -1,14 +1,11 @@
 package components
 
 import (
-	"github.com/bketelsen/factor/markup"
+	"github.com/gowasm/vecty"
 )
 
 type Nav struct {
-	MyProp      string
+	vecty.Core
+	MyProp      string `vecty:"Prop"`
 	CurrentPath string
-}
-
-func (n *Nav) OnAfterPrint(e *markup.Event) {
-
 }

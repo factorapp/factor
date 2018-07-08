@@ -1,6 +1,7 @@
 <!-- maybe factor can somehow "bind" the models.Todo to this html? -->
 <div>
-    <h1>{{ .Name }}</h1>
-    <small>{{ .Description }}</small>
-    <div>(<a href="{{ .Permalink }}">Permalink</a>)</div>
+    <h1>{vecty-field:Name}</h1>
+    <small>{vecty-field:Description}</small>
+    <div>(<a href="{vecty-field:Permalink}">Permalink</a>)</div>
+    <div>Active for {vecty-call:GetAge} days</div>
 </div>

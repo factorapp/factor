@@ -4,47 +4,22 @@ package models
 // fill in your own client logic here!
 
 import (
-	"bytes"
-	"io/ioutil"
-	"log"
-	"net/http"
+	"net/rpc"
 
-	"github.com/gorilla/rpc/v2/json"
 	"github.com/satori/go.uuid"
 )
 
-type TodoClient struct {
+type TodoClient struct{
+	RPC *rpc.Client
 }
 
 func (cl *TodoClient) Get(id uuid.UUID) (*Todo, error) {
-
-	url := "http://localhost:3000/rpc"
-	args := &GetTodoReq{
-		ID: id,
-	}
-	message, err := json.EncodeClientRequest("TodoServer.Get", args)
-	if err != nil {
-		log.Fatalf("%s", err)
-	}
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(message))
-	if err != nil {
+	req := GetTodoReq{ID: id}
+	var res GetTodoRes
+	if err := cl.RPC.Call("Todo.Get", req, &res); err != nil {
 		return nil, err
 	}
-	req.Header.Set("Content-Type", "application/json")
-	client := http.DefaultClient
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	var result GetTodoRes
-	bb := bytes.NewBuffer(body)
-	err = json.DecodeClientResponse(bb, &result)
-	if err != nil {
-		return nil, err
-	}
-	return &result.Data, err
+	return &res.Data, nil
 }
 
 // TODO: more

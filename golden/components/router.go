@@ -1,6 +1,6 @@
 package components
 
-// import "github.com/bketelsen/factor/markup"
+// import "github.com/factorapp/factor/markup"
 
 // type routeMaker = func() (markup.Componer, error)
 

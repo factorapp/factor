@@ -15,14 +15,14 @@
 package cmd
 
 import (
-	"fmt"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
 
-	"github.com/bketelsen/factor/factor/component"
+	"github.com/factorapp/factor/factor/component"
 	"github.com/spf13/cobra"
 )
 
@@ -39,23 +39,22 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		cwd, err := os.Getwd()
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			return
 		}
-		fmt.Println(cwd)
-		fmt.Println("dev called")
+		log.Println("Factor Build in root:", cwd)
 
 		// build first
 		err = build()
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			return
 		}
 
 	},
 }
 
-func processComponents(base string) error {
+func processComponents(base string, packageName string) error {
 
 	err := filepath.Walk(base, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
@@ -66,28 +65,46 @@ func processComponents(base string) error {
 			if err != nil {
 				return err
 			}
-			c, _ := component.Parse(f, componentName(path))
+			//c, _ := component.Parse(f, componentName(path))
 
 			comp := componentName(path)
 			gfn := filepath.Join(base, strings.ToLower(comp)+".go")
 			_, err = os.Stat(gfn)
+			var makeStruct bool
 			if os.IsNotExist(err) {
-				c.Struct = true
+				makeStruct = true
 			}
-			fmt.Printf("visited file: %q\n", path)
-			gofile, err := os.Create(goFileName(base, componentName(path)))
+			/*gofile, err := os.Create(goFileName(base, componentName(path)))
 			if err != nil {
 				return err
 			}
 			defer gofile.Close()
 
 			c.Transform(gofile)
+			*/
+			transpiler, err := component.NewTranspiler(f, makeStruct, comp, packageName)
+			if err != nil {
+				log.Println("ERROR", err)
+				return err
+			}
+
+			gofile, err := os.Create(goFileName(base, comp))
+			if err != nil {
+				log.Println("ERROR", err)
+				return err
+			}
+			defer gofile.Close()
+			_, err = io.WriteString(gofile, transpiler.Code())
+			if err != nil {
+				log.Println("ERROR", err)
+				return err
+			}
 		}
 		return nil
 	})
 
 	if err != nil {
-		fmt.Printf("error walking the path %q: %v\n", base, err)
+		log.Printf("error walking the path %q: %v\n", base, err)
 	}
 	return err
 }

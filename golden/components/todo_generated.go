@@ -1,31 +1,40 @@
+// This file was created with https://github.com/factorapp/factor
+// using https://jsgo.io/dave/html2vecty
 package components
 
 import (
-	"github.com/bketelsen/factor/markup"
-	"github.com/satori/go.uuid"
+	"github.com/gowasm/vecty"
+	"github.com/gowasm/vecty/elem"
+	"github.com/gowasm/vecty/prop"
 )
 
-type Todo struct {
-	ID          uuid.UUID
-	Name        string
-	Description string
-	Permalink   string
-}
+func (p *Todo) Render() vecty.ComponentOrHTML {
+	return elem.Body(
+		elem.Div(
+			elem.Heading1(
 
-var TodoTemplate = `<!-- maybe factor can somehow "bind" the models.Todo to this html? -->
-<div>
-    <h1>{{ .Name }}</h1>
-    <small>{{ .Description }}</small>
-    <div>(<a href="{{ .Permalink }}">Permalink</a>)</div>
-</div>`
-var TodoStyles = ``
+				vecty.Text(p.Name),
+			),
+			elem.Small(
 
-func (t *Todo) Render() string {
-	return TodoTemplate
-}
-func (t *Todo) Style() string {
-	return TodoStyles
-}
-func init() {
-	markup.Register(&Todo{})
+				vecty.Text(p.Description),
+			),
+			elem.Div(
+				vecty.Text("("),
+				elem.Anchor(
+					vecty.Markup(
+						prop.Href(p.Permalink),
+					),
+					vecty.Text("Permalink"),
+				),
+				vecty.Text(")"),
+			),
+			elem.Div(
+
+				vecty.Text("Active for "),
+				vecty.Text(p.GetAge()),
+				vecty.Text(" days"),
+			),
+		),
+	)
 }
