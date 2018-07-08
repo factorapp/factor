@@ -21,7 +21,7 @@ const clMainTemplateStr = `// build +js,wasm
 package main
 
 import (
-	{{ .AppPath }}/routes
+	"{{.AppPath}}/routes"
 	"github.com/gowasm/router"
 	"github.com/gowasm/vecty"
 )
