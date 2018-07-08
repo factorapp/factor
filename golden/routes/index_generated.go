@@ -5,12 +5,9 @@ package routes
 import (
 	"github.com/gowasm/vecty"
 	"github.com/gowasm/vecty/elem"
+	"github.com/gowasm/vecty/event"
 	"github.com/gowasm/vecty/prop"
 )
-
-type Index struct {
-	vecty.Core
-}
 
 func (p *Index) Render() vecty.ComponentOrHTML {
 	return elem.Body(
@@ -27,6 +24,13 @@ func (p *Index) Render() vecty.ComponentOrHTML {
 				),
 				elem.FigureCaption(
 					vecty.Text("HIGH FIVE!"),
+				),
+			),
+			elem.Input(
+				vecty.Markup(
+					prop.Type(prop.TypeSubmit),
+					prop.Value("submit"),
+					event.Click(p.OnClick),
 				),
 			),
 			elem.Paragraph(
