@@ -90,6 +90,48 @@ func populateApp(cwd string) error {
 	if err != nil {
 		return err
 	}
+	filename = "main.go"
+	filePath = filepath.Join(cwd, appName, "client", filename)
+	err = writeTemplate(filePath, clMainTemplate)
+	if err != nil {
+		return err
+	}
+	filename = "Nav.html"
+	filePath = filepath.Join(cwd, appName, "components", filename)
+	err = writeTemplate(filePath, compNavTemplate)
+	if err != nil {
+		return err
+	}
+	filename = "nav.go"
+	filePath = filepath.Join(cwd, appName, "components", filename)
+	err = writeTemplate(filePath, compNavGoTemplate)
+	if err != nil {
+		return err
+	}
+	filename = "Index.html"
+	filePath = filepath.Join(cwd, appName, "routes", filename)
+	err = writeTemplate(filePath, routesTemplate)
+	if err != nil {
+		return err
+	}
+	filename = "index.go"
+	filePath = filepath.Join(cwd, appName, "routes", filename)
+	err = writeTemplate(filePath, routesGoTemplate)
+	if err != nil {
+		return err
+	}
+	filename = "main.go"
+	filePath = filepath.Join(cwd, appName, "server", filename)
+	err = writeTemplate(filePath, serverGoTemplate)
+	if err != nil {
+		return err
+	}
+	filename = "Makefile"
+	filePath = filepath.Join(cwd, appName, filename)
+	err = writeTemplate(filePath, makefileTemplate)
+	if err != nil {
+		return err
+	}
 	return err
 }
 func writeTemplate(filePath string, templateName string) error {
@@ -100,6 +142,7 @@ func writeTemplate(filePath string, templateName string) error {
 	}
 	defer gofile.Close()
 	tpl := template.Must(template.New("component").Parse(templateName))
+	// TODO - get the gopath of cwd and pass it in a context below to this call
 	err = tpl.Execute(gofile, nil)
 	if err != nil {
 		return err
