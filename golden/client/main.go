@@ -18,7 +18,9 @@ func main() {
 		// The handler for this route simply grabs the name parameter
 		// from the map of params and says hello.
 		vecty.SetTitle("Factor: Home")
-		vecty.RenderBody(&routes.Index{})
+		vecty.RenderBody(&routes.Index{
+			Notice: "Initial Default Notice",
+		})
 	})
 	r.HandleFunc("/about", func(context *router.Context) {
 

@@ -26,16 +26,16 @@ func (p *Index) Render() vecty.ComponentOrHTML {
 					vecty.Text("HIGH FIVE!"),
 				),
 			),
-			elem.Input(
-				vecty.Markup(
-					prop.Type(prop.TypeSubmit),
-					prop.Value("submit"),
-					event.Click(p.OnClick),
-				),
-			),
 			elem.Paragraph(
+				elem.Input(
+					vecty.Markup(
+						prop.Type(prop.TypeSubmit),
+						prop.Value("increment counter"),
+						event.Click(p.OnClick),
+					),
+				),
 				elem.Strong(
-					vecty.Text("Try editing this file (routes/index.html) to test hot module reloading."),
+					vecty.Text(p.Notice),
 				),
 			),
 		),
