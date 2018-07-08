@@ -19,6 +19,9 @@ import (
 	"github.com/dave/jennifer/jen"
 )
 
+var callRegexp = regexp.MustCompile(`{vecty-call:([a-zA-Z0-9_\-]+)}`)
+var fieldRegexp = regexp.MustCompile(`{vecty-field:([a-zA-Z0-9_\-]+})`)
+
 func NewTranspiler(r io.ReadCloser, createStruct bool, componentName, packageName string) (*Transpiler, error) {
 	s := &Transpiler{
 		reader:        r,
@@ -82,9 +85,6 @@ func (s *Transpiler) transcode() error {
 		Open:      "{",
 		Separator: ",",
 	}*/
-
-	callRegexp := regexp.MustCompile(`{vecty-call:([a-zA-Z0-9_\-]+)}`)
-	fieldRegexp := regexp.MustCompile(`{vecty-field:([a-zA-Z0-9_\-]+})`)
 
 	var transcode func(*xml.Decoder) (jen.Code, error)
 	transcode = func(decoder *xml.Decoder) (code jen.Code, err error) {
