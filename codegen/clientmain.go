@@ -1,10 +1,27 @@
-package cmd
+package codegen
 
-var clMainTemplate = `// build +js,wasm
+import (
+	"bytes"
+	"text/template"
+)
+
+// ClientGoMain returns the Go code for the main function for the wasm app
+func ClientGoMain(appPath string) (string, error) {
+	b := new(bytes.Buffer)
+	data := map[string]string{"AppPath": appPath}
+	if err := clMainTemplate.Execute(b, data); err != nil {
+		return "", err
+	}
+	return string(b.Bytes()), nil
+}
+
+var clMainTemplate = template.Must(template.New("cl").Parse(clMainTemplateStr))
+
+const clMainTemplateStr = `// build +js,wasm
 package main
 
 import (
-	"github.com/factorapp/factor/examples/routes"
+	{{ .AppPath }}/routes
 	"github.com/gowasm/router"
 	"github.com/gowasm/vecty"
 )

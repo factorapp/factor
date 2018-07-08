@@ -1,6 +1,26 @@
-package cmd
+package codegen
 
-var serverGoTemplate = `// build !js,wasm
+import (
+	"bytes"
+	"text/template"
+)
+
+// ServerGoMain returns the main.go for the server
+func ServerGoMain(appPath string) (string, error) {
+	b := new(bytes.Buffer)
+	data := map[string]string{
+		"AppPath": appPath,
+	}
+	if err := serverGoTemplate.Execute(b, data); err != nil {
+		return "", err
+	}
+	return string(b.Bytes()), nil
+
+}
+
+var serverGoTemplate = template.Must(template.New("servergo").Parse(serverGoTemplateStr))
+
+var serverGoTemplateStr = `// build !js,wasm
 package main
 
 import (
@@ -10,7 +30,7 @@ import (
 	"github.com/gorilla/rpc/v2"
 	"github.com/gorilla/rpc/v2/json"
 
-	"github.com/factorapp/factor/examples/models"
+	{{.AppPath}}/models"
 )
 
 func wasmHandler(w http.ResponseWriter, r *http.Request) {

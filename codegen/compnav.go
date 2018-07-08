@@ -1,6 +1,10 @@
-package cmd
+package codegen
 
-var compNavGoTemplate = `package components
+// NavComponentGo returns the Go code for the Nav component
+//
+// TODO: make this flexible to generate arbitrary components
+// see https://github.com/factorapp/factor/issues/24
+const NavComponentGo = `package components
 
 import (
 	"github.com/gowasm/vecty"
@@ -12,7 +16,9 @@ type Nav struct {
 	CurrentPath string
 }
 `
-var compNavTemplate = `<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+
+// NavComponentHTML returns the HTML code for the Nav component
+const NavComponentHTML = `<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
 <a class="navbar-brand" href="#">Navbar</a>
 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
   <span class="navbar-toggler-icon"></span>

@@ -1,6 +1,7 @@
-package cmd
+package codegen
 
-var routesTemplate = `<body>
+// RoutesHTML returns the HTML code for the index route
+const RoutesHTML = `<body>
 <components:Nav />
 <main role="main" class="container">
 
@@ -10,9 +11,10 @@ var routesTemplate = `<body>
 	</div>
 
   </main><!-- /.container -->
-</body`
+</body>`
 
-var routesGoTemplate = `package routes
+// RoutesGo returns the Go code for the index route
+const RoutesGo = `package routes
 
 import (
 	"fmt"
