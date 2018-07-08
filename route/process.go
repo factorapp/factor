@@ -1,4 +1,4 @@
-package component
+package route
 
 import (
 	"io"
@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+
+	"github.com/factorapp/factor/component"
 )
 
 // ProcessAll processes components starting at base
@@ -38,7 +40,7 @@ func ProcessAll(base string) error {
 
 			c.Transform(gofile)
 			*/
-			transpiler, err := NewTranspiler(f, makeStruct, comp, "components")
+			transpiler, err := component.NewTranspiler(f, makeStruct, comp, "routes")
 			if err != nil {
 				log.Println("ERROR", err)
 				return err
