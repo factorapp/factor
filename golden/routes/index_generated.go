@@ -10,7 +10,9 @@ import (
 
 func (p *Index) Render() vecty.ComponentOrHTML {
 	return elem.Body(
-		&components.Nav{},
+		elem.Body(
+			&components.Nav{},
+		),
 		elem.Main(
 			vecty.Markup(
 				vecty.Attribute("role", "main"),

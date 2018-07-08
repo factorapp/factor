@@ -9,149 +9,150 @@ import (
 )
 
 func (p *Nav) Render() vecty.ComponentOrHTML {
-	return elem.Navigation(
-		vecty.Markup(
-			vecty.Class("navbar", "navbar-expand-md", "navbar-dark", "bg-dark", "fixed-top"),
-		),
-		elem.Anchor(
+	return elem.Body(
+		elem.Navigation(
 			vecty.Markup(
-				vecty.Class("navbar-brand"),
-				prop.Href("#"),
+				vecty.Class("navbar", "navbar-expand-md", "navbar-dark", "bg-dark", "fixed-top"),
 			),
-			vecty.Text("Navbar"),
-		),
-		elem.Button(
-			vecty.Markup(
-				vecty.Class("navbar-toggler"),
-				prop.Type(prop.TypeButton),
-				vecty.Data("toggle", "collapse"),
-				vecty.Data("target", "#navbarsExampleDefault"),
-				vecty.Attribute("aria-controls", "navbarsExampleDefault"),
-				vecty.Attribute("aria-expanded", "false"),
-				vecty.Attribute("aria-label", "Toggle navigation"),
-			),
-			elem.Span(
+			elem.Anchor(
 				vecty.Markup(
-					vecty.Class("navbar-toggler-icon"),
+					vecty.Class("navbar-brand"),
+					prop.Href("#"),
 				),
+				vecty.Text("Navbar"),
 			),
-		),
-		elem.Div(
-			vecty.Markup(
-				vecty.Class("collapse", "navbar-collapse"),
-				prop.ID("navbarsExampleDefault"),
-			),
-			elem.UnorderedList(
+			elem.Button(
 				vecty.Markup(
-					vecty.Class("navbar-nav", "mr-auto"),
+					vecty.Class("navbar-toggler"),
+					prop.Type(prop.TypeButton),
+					vecty.Data("toggle", "collapse"),
+					vecty.Data("target", "#navbarsExampleDefault"),
+					vecty.Attribute("aria-controls", "navbarsExampleDefault"),
+					vecty.Attribute("aria-expanded", "false"),
+					vecty.Attribute("aria-label", "Toggle navigation"),
 				),
-				elem.ListItem(
+				elem.Span(
 					vecty.Markup(
-						vecty.Class("nav-item", "active"),
-					),
-					elem.Anchor(
-						vecty.Markup(
-							vecty.Class("nav-link"),
-							prop.Href("#"),
-						),
-						vecty.Text("Home"),
-						elem.Span(
-							vecty.Markup(
-								vecty.Class("sr-only"),
-							),
-							vecty.Text("(current)"),
-						),
+						vecty.Class("navbar-toggler-icon"),
 					),
 				),
-				elem.ListItem(
-					vecty.Markup(
-						vecty.Class("nav-item"),
-					),
-					elem.Anchor(
-						vecty.Markup(
-							vecty.Class("nav-link"),
-							prop.Href("#"),
-						),
-						vecty.Text("Link"),
-					),
+			),
+			elem.Div(
+				vecty.Markup(
+					vecty.Class("collapse", "navbar-collapse"),
+					prop.ID("navbarsExampleDefault"),
 				),
-				elem.ListItem(
+				elem.UnorderedList(
 					vecty.Markup(
-						vecty.Class("nav-item"),
+						vecty.Class("navbar-nav", "mr-auto"),
 					),
-					elem.Anchor(
+					elem.ListItem(
 						vecty.Markup(
-							vecty.Class("nav-link", "disabled"),
-							prop.Href("#"),
-						),
-						vecty.Text("Disabled"),
-					),
-				),
-				elem.ListItem(
-					vecty.Markup(
-						vecty.Class("nav-item", "dropdown"),
-					),
-					elem.Anchor(
-						vecty.Markup(
-							vecty.Class("nav-link", "dropdown-toggle"),
-							prop.Href("https://example.com"),
-							prop.ID("dropdown01"),
-							vecty.Data("toggle", "dropdown"),
-							vecty.Attribute("aria-haspopup", "true"),
-							vecty.Attribute("aria-expanded", "false"),
-						),
-						vecty.Text("Dropdown"),
-					),
-					elem.Div(
-						vecty.Markup(
-							vecty.Class("dropdown-menu"),
-							vecty.Attribute("aria-labelledby", "dropdown01"),
+							vecty.Class("nav-item", "active"),
 						),
 						elem.Anchor(
 							vecty.Markup(
-								vecty.Class("dropdown-item"),
+								vecty.Class("nav-link"),
 								prop.Href("#"),
 							),
-							vecty.Text("Action"),
+							vecty.Text("Home"),
+							elem.Span(
+								vecty.Markup(
+									vecty.Class("sr-only"),
+								),
+								vecty.Text("(current)"),
+							),
+						),
+					),
+					elem.ListItem(
+						vecty.Markup(
+							vecty.Class("nav-item"),
 						),
 						elem.Anchor(
 							vecty.Markup(
-								vecty.Class("dropdown-item"),
+								vecty.Class("nav-link"),
 								prop.Href("#"),
 							),
-							vecty.Text("Another action"),
+							vecty.Text("Link"),
+						),
+					),
+					elem.ListItem(
+						vecty.Markup(
+							vecty.Class("nav-item"),
 						),
 						elem.Anchor(
 							vecty.Markup(
-								vecty.Class("dropdown-item"),
+								vecty.Class("nav-link", "disabled"),
 								prop.Href("#"),
 							),
-							vecty.Text("Something else here"),
+							vecty.Text("Disabled"),
+						),
+					),
+					elem.ListItem(
+						vecty.Markup(
+							vecty.Class("nav-item", "dropdown"),
+						),
+						elem.Anchor(
+							vecty.Markup(
+								vecty.Class("nav-link", "dropdown-toggle"),
+								prop.Href("https://example.com"),
+								prop.ID("dropdown01"),
+								vecty.Data("toggle", "dropdown"),
+								vecty.Attribute("aria-haspopup", "true"),
+								vecty.Attribute("aria-expanded", "false"),
+							),
+							vecty.Text("Dropdown"),
+						),
+						elem.Div(
+							vecty.Markup(
+								vecty.Class("dropdown-menu"),
+								vecty.Attribute("aria-labelledby", "dropdown01"),
+							),
+							elem.Anchor(
+								vecty.Markup(
+									vecty.Class("dropdown-item"),
+									prop.Href("#"),
+								),
+								vecty.Text("Action"),
+							),
+							elem.Anchor(
+								vecty.Markup(
+									vecty.Class("dropdown-item"),
+									prop.Href("#"),
+								),
+								vecty.Text("Another action"),
+							),
+							elem.Anchor(
+								vecty.Markup(
+									vecty.Class("dropdown-item"),
+									prop.Href("#"),
+								),
+								vecty.Text("Something else here"),
+							),
 						),
 					),
 				),
-			),
-			elem.Form(
-				vecty.Markup(
-					vecty.Class("form-inline", "my-2", "my-lg-0"),
-				),
-				elem.Input(
+				elem.Form(
 					vecty.Markup(
-						vecty.Class("form-control", "mr-sm-2"),
-						prop.Type(prop.TypeText),
-						prop.Placeholder("Search"),
-						vecty.Attribute("aria-label", "Search"),
+						vecty.Class("form-inline", "my-2", "my-lg-0"),
 					),
-				),
-				elem.Button(
-					vecty.Markup(
-						vecty.Class("btn", "btn-outline-success", "my-2", "my-sm-0"),
-						prop.Type(prop.TypeSubmit),
+					elem.Input(
+						vecty.Markup(
+							vecty.Class("form-control", "mr-sm-2"),
+							prop.Type(prop.TypeText),
+							prop.Placeholder("Search"),
+							vecty.Attribute("aria-label", "Search"),
+						),
 					),
-					vecty.Text("Search"),
+					elem.Button(
+						vecty.Markup(
+							vecty.Class("btn", "btn-outline-success", "my-2", "my-sm-0"),
+							prop.Type(prop.TypeSubmit),
+						),
+						vecty.Text("Search"),
+					),
 				),
 			),
 		),
 	)
-
 }

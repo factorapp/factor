@@ -539,6 +539,7 @@ func (s *Transpiler) transcode() error {
 	}
 	file.Func().Params(jen.Id("p").Op("*").Id(s.componentName)).Id("Render").Params().Qual("github.com/gowasm/vecty", "ComponentOrHTML").Block(
 		jen.Return(
+			// TODO: wrap in if - only body for a "route"
 			jen.Qual("github.com/gowasm/vecty/elem", "Body").Custom(call, elements...),
 		),
 	)
