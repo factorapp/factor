@@ -6,43 +6,31 @@ import (
 	components "github.com/factorapp/factor/golden/components"
 	"github.com/gowasm/vecty"
 	"github.com/gowasm/vecty/elem"
-	"github.com/gowasm/vecty/event"
-	"github.com/gowasm/vecty/prop"
 )
 
 func (p *Index) Render() vecty.ComponentOrHTML {
 	return elem.Body(
+		&components.Nav{},
 		elem.Main(
-			&components.Nav{
-
-				MyProp: "blue",
-			},
-		),
-		elem.Heading1(
-			vecty.Text("Great success!"),
-		),
-		elem.Figure(
-			elem.Image(
+			vecty.Markup(
+				vecty.Attribute("role", "main"),
+				vecty.Class("container"),
+			),
+			elem.Div(
 				vecty.Markup(
-					vecty.Attribute("alt", "Borat"),
-					prop.Src("/assets/great-success.png"),
+					vecty.Class("starter-template"),
 				),
-			),
-			elem.FigureCaption(
-				vecty.Text("HIGH FIVE!"),
-			),
-		),
-		elem.Paragraph(
-			elem.Input(
-				vecty.Markup(
-					prop.Type(prop.TypeSubmit),
-					prop.Value("increment counter"),
-					event.Click(p.OnClick),
+				elem.Heading1(
+					vecty.Text("Bootstrap starter template"),
 				),
-			),
-			elem.Strong(
-
-				vecty.Text(p.CountText),
+				elem.Paragraph(
+					vecty.Markup(
+						vecty.Class("lead"),
+					),
+					vecty.Text("Use this document as a way to quickly start any new project."),
+					elem.Break(),
+					vecty.Text("All you get is this text and a mostly barebones HTML document."),
+				),
 			),
 		),
 	)

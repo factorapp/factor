@@ -1,3 +1,6 @@
+package cmd
+
+var gcssTemplate = `
 body {
 	padding-top: 5rem;
   }
@@ -5,4 +8,4 @@ body {
 	padding: 3rem 1.5rem;
 	text-align: center;
   }
-  
+`
