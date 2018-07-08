@@ -9,10 +9,6 @@ import (
 	"github.com/gowasm/vecty/prop"
 )
 
-type Todo struct {
-	vecty.Core
-}
-
 func (p *Todo) Render() vecty.ComponentOrHTML {
 	return elem.Body(
 		elem.Div(
