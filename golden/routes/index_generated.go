@@ -13,7 +13,12 @@ import (
 func (p *Index) Render() vecty.ComponentOrHTML {
 	return elem.Body(
 		elem.Main(
-			&components.Nav{},
+			components.Nav(
+				"Nav",
+				vecty.Markup(
+					vecty.Attribute("MyProp", "blue"),
+				),
+			),
 			elem.Heading1(
 				vecty.Text("Great success!"),
 			),
@@ -37,6 +42,7 @@ func (p *Index) Render() vecty.ComponentOrHTML {
 					),
 				),
 				elem.Strong(
+
 					vecty.Text(p.CountText),
 				),
 			),

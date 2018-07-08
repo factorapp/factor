@@ -12,9 +12,11 @@ func (p *Todo) Render() vecty.ComponentOrHTML {
 	return elem.Body(
 		elem.Div(
 			elem.Heading1(
+
 				vecty.Text(p.Name),
 			),
 			elem.Small(
+
 				vecty.Text(p.Description),
 			),
 			elem.Div(

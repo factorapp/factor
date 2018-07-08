@@ -238,16 +238,18 @@ func (s *Transpiler) transcode() error {
 			hasSpecial := hasCall || hasField
 
 			if hasSpecial {
-				fieldQualifier := func(name string) (*jen.Statement, error) {
+				/*
+					fieldQualifier := func(name string) (*jen.Statement, error) {
 
-					fmt.Println("field qualifier:", str, name)
-					n := strings.TrimLeft(name, "{vecty-field:")
-					n = strings.TrimRight(n, "}")
-					return jen.Qual("github.com/gowasm/vecty", "Text").Call(
-						// TODO: struct qualifier
-						jen.Id("p." + n),
-					), nil
-				}
+						fmt.Println("field qualifier:", str, name)
+						n := strings.TrimLeft(name, "{vecty-field:")
+						n = strings.TrimRight(n, "}")
+						return jen.Qual("github.com/gowasm/vecty", "Text").Call(
+							// TODO: struct qualifier
+							jen.Id("p." + n),
+						), nil
+					}
+				*/
 				/*
 					callQualifier := func(lhs, name, rhs string) (*jen.Statement, error) {
 						fmt.Println("call qualifier:", str, name)
@@ -352,11 +354,87 @@ func (s *Transpiler) transcode() error {
 
 				}
 				if hasField {
-					fmt.Println("Found a field")
-					fqResult := fieldRegexp.FindString(str)
-					fmt.Println("field result:", fqResult)
-					return fieldQualifier((fqResult))
+
+					/*
+						re := regexp.MustCompile(`({vecty-call:[a-zA-Z0-9]+})`)
+						t := "{vecty-call:Alone}thing{vecty-call:Thing}stuff{vecty-call:Stuff}other{vecty-call:Blue}"
+						crResult := re.FindAllStringIndex(t, -1)
+						index := 0
+						for matchNumber, match := range crResult {
+							fmt.Println(match)
+							fmt.Println("Before:", t[index:match[0]])
+							fmt.Println("Match:", t[match[0]:match[1]])
+							fmt.Println(re.FindAllStringSubmatch(t, index))
+							if matchNumber < len(crResult)-1 {
+								// there's another match
+
+								fmt.Println(matchNumber, len(crResult), index, crResult, "There is another")
+								fmt.Println("next Result:",crResult[matchNumber+1][0])
+								fmt.Println(t[match[1]:])
+								fmt.Println(crResult[matchNumber+1])
+								fmt.Println("Internal After:", t[match[1]:crResult[matchNumber+1][0]])
+							}
+
+							fmt.Println("After:", t[match[1]:])
+							index = match[1]
+						}
+					*/
+					callOpts := jen.Options{
+						Close:     "",
+						Multi:     true,
+						Open:      "",
+						Separator: ",",
+					}
+					q := jen.CustomFunc(callOpts, func(g *jen.Group) {
+						crResult := fieldRegexp.FindAllStringIndex(str, -1)
+						index := 0
+						for matchNumber, match := range crResult {
+							var before, between, after string
+							before = str[index:match[0]]
+							field := str[match[0]:match[1]]
+							field = strings.TrimLeft(field, "{vecty-field:")
+							field = strings.Replace(field, "}", "", -1)
+							if matchNumber < len(crResult)-1 {
+								// there's another match
+								between = str[match[1]:crResult[matchNumber+1][0]]
+							}
+							after = str[match[1]:]
+							/*
+								g.Qual("fmt", "Sprintf").Call(
+									jen.Lit("%s%s%s"),
+									jen.Lit(lhs),
+									jen.Id("p."+fnCall+"()"),
+									jen.Lit(rhs),
+								)
+							*/
+							if before != "" && !strings.Contains(before, "vecty-field") {
+								g.Add(
+									jen.Qual("github.com/gowasm/vecty", "Text").Call(
+										jen.Lit(before),
+									))
+							}
+							g.Add(
+								jen.Qual("github.com/gowasm/vecty", "Text").Call(
+									jen.Id("p." + field),
+								))
+							if between != "" && !strings.Contains(between, "vecty-field") {
+								g.Add(
+									jen.Qual("github.com/gowasm/vecty", "Text").Call(
+										jen.Lit(between),
+									))
+							}
+							if after != "" && !strings.Contains(after, "vecty-field") {
+								g.Add(
+									jen.Qual("github.com/gowasm/vecty", "Text").Call(
+										jen.Lit(after),
+									))
+							}
+						}
+					})
+					return q, nil
+
 				}
+
 			}
 			s := strings.TrimSpace(string(token))
 			if s == "" {
