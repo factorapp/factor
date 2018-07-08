@@ -5,8 +5,9 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
+
+	"github.com/factorapp/factor/files"
 )
 
 // ProcessAll processes components starting at base
@@ -16,14 +17,14 @@ func ProcessAll(base string) error {
 		if err != nil {
 			return err
 		}
-		if !info.IsDir() && isHTML(info) {
+		if !info.IsDir() && files.IsHTML(info) {
 			f, err := os.Open(path)
 			if err != nil {
 				return err
 			}
 			//c, _ := component.Parse(f, componentName(path))
 
-			comp := componentName(path)
+			comp := files.ComponentName(path)
 			gfn := filepath.Join(base, strings.ToLower(comp)+".go")
 			_, err = os.Stat(gfn)
 			var makeStruct bool
@@ -44,7 +45,7 @@ func ProcessAll(base string) error {
 				return err
 			}
 
-			gofile, err := os.Create(goFileName(base, comp))
+			gofile, err := os.Create(files.GeneratedGoFileName(base, comp))
 			if err != nil {
 				log.Println("ERROR", err)
 				return err
@@ -63,21 +64,4 @@ func ProcessAll(base string) error {
 		log.Printf("error walking the path %q: %v\n", base, err)
 	}
 	return err
-}
-
-func isHTML(info os.FileInfo) bool {
-	return filepath.Ext(info.Name()) == ".html"
-}
-
-func goFileName(base, comp string) string {
-	return filepath.Join(base, strings.ToLower(comp)+"_generated.go")
-}
-func componentName(path string) string {
-	reg, err := regexp.Compile("[^a-zA-Z0-9]+")
-	if err != nil {
-		log.Fatal(err)
-	}
-	base := filepath.Base(path)
-	base = strings.Replace(base, filepath.Ext(path), "", -1)
-	return strings.Title(reg.ReplaceAllString(base, ""))
 }
