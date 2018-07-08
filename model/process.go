@@ -1,15 +1,14 @@
-package cmd
+package model
 
 import (
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
-
-	"github.com/factorapp/factor/model"
 )
 
-func processModels(base string) error {
+// ProcessAll processes models starting at base
+func ProcessAll(base string) error {
 	servers := []string{}
 	clients := []string{}
 	err := filepath.Walk(base, func(path string, info os.FileInfo, err error) error {
@@ -22,7 +21,7 @@ func processModels(base string) error {
 		if !isModel(info) {
 			return nil
 		}
-		model := model.New(path, info)
+		model := New(path, info)
 
 		typesFilename := filepath.Join(base, model.TypesFilename())
 		log.Printf("generating %s", typesFilename)
@@ -61,7 +60,7 @@ func processModels(base string) error {
 	if err != nil {
 		return err
 	}
-	if err := model.WriteClientFile(clientFd, clients); err != nil {
+	if err := WriteClientFile(clientFd, clients); err != nil {
 		return err
 	}
 
@@ -70,7 +69,7 @@ func processModels(base string) error {
 	if err != nil {
 		return err
 	}
-	if err := model.WriteServerFile(serverFd); err != nil {
+	if err := WriteServerFile(serverFd); err != nil {
 		return err
 	}
 	log.Printf("generated servers and clients: %s", servers)

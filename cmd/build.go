@@ -20,6 +20,7 @@ import (
 	"path/filepath"
 
 	"github.com/factorapp/factor/component"
+	"github.com/factorapp/factor/model"
 	"github.com/spf13/cobra"
 )
 
@@ -62,7 +63,7 @@ func build() error {
 	}
 
 	dir = filepath.Join(cwd, "models")
-	err = processModels(dir)
+	err = model.ProcessAll(dir)
 	if err != nil {
 		return err
 	}
