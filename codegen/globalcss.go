@@ -1,6 +1,7 @@
-package cmd
+package codegen
 
-var gcssTemplate = `
+// GlobalCSS returns the global CSS code
+const GlobalCSS = `
 body {
 	padding-top: 5rem;
   }

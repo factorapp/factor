@@ -22,6 +22,8 @@ import (
 	"path/filepath"
 	"text/template"
 
+	"github.com/factorapp/factor/codegen"
+	"github.com/gobuffalo/envy"
 	"github.com/spf13/cobra"
 )
 
@@ -65,12 +67,19 @@ to quickly create a Cobra application.`,
 			fmt.Println("error making directories:", err)
 			return
 		}
+		appPkg := filepath.Join(envy.CurrentPackage(), appName)
+		if appPkg == "" {
+			fmt.Println("couldn't get the current package for the app")
+			return
+		}
+		fmt.Println("app package", appPkg)
 		// put the new files there
-		populateApp(cwd)
+		populateApp(cwd, appPkg)
 	},
 }
 
-func populateApp(cwd string) error {
+// appPath is the location of the app under the GOPATH
+func populateApp(cwd, appPkg string) error {
 	filename := "index.html"
 	filePath := filepath.Join(cwd, appName, "app", filename)
 	err := writeTemplate(filePath, indexTemplate)
@@ -80,55 +89,63 @@ func populateApp(cwd string) error {
 
 	filename = "wasm_exec.js"
 	filePath = filepath.Join(cwd, appName, "app", filename)
-	err = writeTemplate(filePath, wasmTemplate)
+	err = writeTemplate(filePath, codegen.WasmJS)
 	if err != nil {
 		return err
 	}
 	filename = "global.css"
 	filePath = filepath.Join(cwd, appName, "assets", filename)
-	err = writeTemplate(filePath, gcssTemplate)
+	err = writeTemplate(filePath, codegen.GlobalCSS)
 	if err != nil {
 		return err
 	}
 	filename = "main.go"
 	filePath = filepath.Join(cwd, appName, "client", filename)
-	err = writeTemplate(filePath, clMainTemplate)
+	clientGoMain, err := codegen.ClientGoMain(appPkg)
+	if err != nil {
+		return err
+	}
+	err = writeTemplate(filePath, clientGoMain)
 	if err != nil {
 		return err
 	}
 	filename = "Nav.html"
 	filePath = filepath.Join(cwd, appName, "components", filename)
-	err = writeTemplate(filePath, compNavTemplate)
+	err = writeTemplate(filePath, codegen.NavComponentHTML)
 	if err != nil {
 		return err
 	}
 	filename = "nav.go"
 	filePath = filepath.Join(cwd, appName, "components", filename)
-	err = writeTemplate(filePath, compNavGoTemplate)
+	err = writeTemplate(filePath, codegen.NavComponentGo)
 	if err != nil {
 		return err
 	}
 	filename = "Index.html"
 	filePath = filepath.Join(cwd, appName, "routes", filename)
-	err = writeTemplate(filePath, routesTemplate)
+	err = writeTemplate(filePath, codegen.RoutesHTML)
 	if err != nil {
 		return err
 	}
 	filename = "index.go"
 	filePath = filepath.Join(cwd, appName, "routes", filename)
-	err = writeTemplate(filePath, routesGoTemplate)
+	err = writeTemplate(filePath, codegen.RoutesGo)
 	if err != nil {
 		return err
 	}
 	filename = "main.go"
 	filePath = filepath.Join(cwd, appName, "server", filename)
-	err = writeTemplate(filePath, serverGoTemplate)
+	serverGoMain, err := codegen.ServerGoMain(appPkg)
+	if err != nil {
+		return err
+	}
+	err = writeTemplate(filePath, serverGoMain)
 	if err != nil {
 		return err
 	}
 	filename = "Makefile"
 	filePath = filepath.Join(cwd, appName, filename)
-	err = writeTemplate(filePath, makefileTemplate)
+	err = writeTemplate(filePath, codegen.Makefile)
 	if err != nil {
 		return err
 	}
