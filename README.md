@@ -36,7 +36,7 @@ Once you see `ALL TESTS PASSED`, your Go 1.11 beta 1 toolchain is done! Now, mov
 the entire `go` directory to `~/gowasm`:
 
 ```console
-$ cd ..
+$ cd ../..
 $ mv go ~/gowasm
 ```
 
