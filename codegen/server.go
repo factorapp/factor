@@ -30,7 +30,7 @@ import (
 	"github.com/gorilla/rpc/v2"
 	"github.com/gorilla/rpc/v2/json"
 
-	{{.AppPath}}/models"
+	"{{.AppPath}}/models"
 )
 
 func wasmHandler(w http.ResponseWriter, r *http.Request) {

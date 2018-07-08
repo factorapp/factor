@@ -4,7 +4,7 @@ package codegen
 //
 // TODO: this won't be necessary after https://github.com/factorapp/factor/issues/11
 const Makefile = `wasm: 
-	GOARCH=wasm GOOS=js go build -o example.wasm ./client 
+	GOARCH=wasm GOOS=js ~/gowasm/bin/go build -o example.wasm ./client 
 	mv example.wasm ./app/
 
 run:  wasm
