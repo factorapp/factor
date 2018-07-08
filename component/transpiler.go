@@ -23,10 +23,11 @@ import (
 var callRegexp = regexp.MustCompile(`{vecty-call:([a-zA-Z0-9_\-]+)}`)
 var fieldRegexp = regexp.MustCompile(`{vecty-field:([a-zA-Z0-9_\-]+})`)
 
-func NewTranspiler(r io.ReadCloser, createStruct bool, componentName, packageName string) (*Transpiler, error) {
+func NewTranspiler(r io.ReadCloser, createStruct bool, appPackage, componentName, packageName string) (*Transpiler, error) {
 	s := &Transpiler{
 		reader:        r,
 		createStruct:  createStruct,
+		appPackage:    appPackage,
 		packageName:   packageName,
 		componentName: componentName,
 	}
@@ -44,6 +45,7 @@ func NewTranspiler(r io.ReadCloser, createStruct bool, componentName, packageNam
 type Transpiler struct {
 	reader        io.ReadCloser
 	createStruct  bool
+	appPackage    string
 	componentName string
 	packageName   string
 	html, code    string
@@ -100,65 +102,9 @@ func (s *Transpiler) transcode() error {
 			if !ok {
 				fmt.Println(token.Name.Space, token.Name.Local)
 				if strings.HasPrefix(token.Name.Space, "components") {
-					// TODO: pass the right package name in
-					vectyPackage = "github.com/factorapp/factor/examples/components"
-					var component string
-					var qual bool
-					if s.packageName == "components" {
-						vectyPackage = ""
-						qual = false
-						component = strings.TrimLeft(tag, "components.")
-					} else {
-						qual = true
-						component = tag
-					}
-
-					fmt.Println(s.packageName, component, qual)
-					vectyFunction = component
-					vectyParamater = tag
-					if qual {
-						fmt.Println(component)
-						baseDecl := jen.Id("&").Add(jen.Qual(vectyPackage, "").Add(
-							jen.Id(component),
-						))
-						attrCall := jen.Options{
-							Close:     "",
-							Multi:     true,
-							Open:      "",
-							Separator: ",",
-						}
-						block := jen.CustomFunc(attrCall, func(g *jen.Group) {
-							for _, v := range token.Attr {
-								fmt.Println(v.Name.Local)
-								fmt.Println(v.Value)
-								g.Id(v.Name.Local).Id(":").Lit(v.Value).Id(",")
-							}
-						})
-
-						baseDecl.Block(block)
-
-						return baseDecl, nil
-					}
-					baseDecl := jen.Id("&").Add(
-						jen.Id(component),
-					)
-					attrCall := jen.Options{
-						Close:     "",
-						Multi:     true,
-						Open:      "",
-						Separator: ",",
-					}
-					block := jen.CustomFunc(attrCall, func(g *jen.Group) {
-						for _, v := range token.Attr {
-							fmt.Println(v.Name.Local)
-							fmt.Println(v.Value)
-							g.Id(v.Name.Local).Id(":").Lit(v.Value).Id(",")
-						}
-					})
-					baseDecl.Block(block)
-
-					return baseDecl, nil
-
+					// not sure if we need this?
+					componentName := strings.TrimLeft(tag, "components.")
+					return transpiler.ComponentElement(s.appPackage, componentName)
 				} else {
 					vectyFunction = "Tag"
 					vectyPackage = "github.com/gowasm/vecty"
