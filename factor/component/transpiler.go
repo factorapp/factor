@@ -123,27 +123,43 @@ func (s *Transpiler) transcode() error {
 						baseDecl := jen.Id("&").Add(jen.Qual(vectyPackage, "").Add(
 							jen.Id(component),
 						))
-						if len(token.Attr) > 0 {
-							attrCall := jen.Options{
-								Close:     "",
-								Multi:     true,
-								Open:      "",
-								Separator: ",",
-							}
-							block := jen.CustomFunc(attrCall, func(g *jen.Group) {
-								for _, v := range token.Attr {
-									fmt.Println(v.Name.Local)
-									fmt.Println(v.Value)
-									g.Id(v.Name.Local).Id(":").Lit(v.Value).Id(",")
-								}
-							})
-
-							baseDecl.Block(block)
+						attrCall := jen.Options{
+							Close:     "",
+							Multi:     true,
+							Open:      "",
+							Separator: ",",
 						}
+						block := jen.CustomFunc(attrCall, func(g *jen.Group) {
+							for _, v := range token.Attr {
+								fmt.Println(v.Name.Local)
+								fmt.Println(v.Value)
+								g.Id(v.Name.Local).Id(":").Lit(v.Value).Id(",")
+							}
+						})
+
+						baseDecl.Block(block)
 
 						return baseDecl, nil
 					}
-					return jen.Id("&" + component + "{}"), nil
+					baseDecl := jen.Id("&").Add(
+						jen.Id(component),
+					)
+					attrCall := jen.Options{
+						Close:     "",
+						Multi:     true,
+						Open:      "",
+						Separator: ",",
+					}
+					block := jen.CustomFunc(attrCall, func(g *jen.Group) {
+						for _, v := range token.Attr {
+							fmt.Println(v.Name.Local)
+							fmt.Println(v.Value)
+							g.Id(v.Name.Local).Id(":").Lit(v.Value).Id(",")
+						}
+					})
+					baseDecl.Block(block)
+
+					return baseDecl, nil
 
 				} else {
 					vectyFunction = "Tag"
