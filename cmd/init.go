@@ -20,10 +20,10 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"strings"
 	"text/template"
 
 	"github.com/factorapp/factor/codegen"
+	"github.com/gobuffalo/envy"
 	"github.com/spf13/cobra"
 )
 
@@ -56,33 +56,30 @@ to quickly create a Cobra application.`,
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		goPath := os.Getenv("GOPATH")
-		if goPath == "" {
-			fmt.Println("no GOPATH set")
-			return
-		}
-		fmt.Println("gopath", goPath)
 		cwd, err := os.Getwd()
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
-		fmt.Println("cwd", cwd)
 		// make directories under appName
 		err = makeDirectories(cwd)
 		if err != nil {
 			fmt.Println("error making directories:", err)
 			return
 		}
-		appPackage := strings.TrimLeft(cwd, filepath.Join(goPath, "src"))
-		fmt.Println("app package", appPackage)
+		appPkg := filepath.Join(envy.CurrentPackage(), appName)
+		if appPkg == "" {
+			fmt.Println("couldn't get the current package for the app")
+			return
+		}
+		fmt.Println("app package", appPkg)
 		// put the new files there
-		populateApp(cwd, appPackage)
+		populateApp(cwd, appPkg)
 	},
 }
 
 // appPath is the location of the app under the GOPATH
-func populateApp(cwd, appPath string) error {
+func populateApp(cwd, appPkg string) error {
 	filename := "index.html"
 	filePath := filepath.Join(cwd, appName, "app", filename)
 	err := writeTemplate(filePath, indexTemplate)
@@ -104,7 +101,7 @@ func populateApp(cwd, appPath string) error {
 	}
 	filename = "main.go"
 	filePath = filepath.Join(cwd, appName, "client", filename)
-	clientGoMain, err := codegen.ClientGoMain(appPath)
+	clientGoMain, err := codegen.ClientGoMain(appPkg)
 	if err != nil {
 		return err
 	}
@@ -138,7 +135,7 @@ func populateApp(cwd, appPath string) error {
 	}
 	filename = "main.go"
 	filePath = filepath.Join(cwd, appName, "server", filename)
-	serverGoMain, err := codegen.ServerGoMain(appPath)
+	serverGoMain, err := codegen.ServerGoMain(appPkg)
 	if err != nil {
 		return err
 	}
