@@ -104,7 +104,7 @@ func (s *Transpiler) transcode() error {
 				if strings.HasPrefix(token.Name.Space, "components") {
 					// not sure if we need this?
 					componentName := strings.TrimLeft(tag, "components.")
-					return transpiler.ComponentElement(s.appPackage, componentName)
+					return transpiler.ComponentElement(s.appPackage, componentName, &token), nil
 				} else {
 					vectyFunction = "Tag"
 					vectyPackage = "github.com/gowasm/vecty"
@@ -489,10 +489,16 @@ func (s *Transpiler) transcode() error {
 			),
 		)
 	} else {
+		callOpts := jen.Options{
+			Close:     "",
+			Multi:     false,
+			Open:      "",
+			Separator: ",",
+		}
 		file.Func().Params(jen.Id("p").Op("*").Id(s.componentName)).Id("Render").Params().Qual("github.com/gowasm/vecty", "ComponentOrHTML").Block(
 			jen.Return(
 				// TODO: wrap in if - only body for a "route"
-				jen.Qual("github.com/gowasm/vecty/elem", "Markup").Custom(call, elements...),
+				jen.Custom(callOpts, elements...),
 			),
 		)
 	}
