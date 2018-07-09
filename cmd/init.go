@@ -133,6 +133,12 @@ func populateApp(cwd, appPkg string) error {
 	if err != nil {
 		return err
 	}
+	filename = "todo.go"
+	filePath = filepath.Join(cwd, appName, "models", filename)
+	err = writeTemplate(filePath, codegen.TodoClient)
+	if err != nil {
+		return err
+	}
 	filename = "main.go"
 	filePath = filepath.Join(cwd, appName, "server", filename)
 	serverGoMain, err := codegen.ServerGoMain(appPkg)

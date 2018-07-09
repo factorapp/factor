@@ -9,6 +9,7 @@ import (
 
 	"github.com/factorapp/factor/component"
 	"github.com/factorapp/factor/files"
+	"github.com/gobuffalo/envy"
 )
 
 // ProcessAll processes components starting at base
@@ -40,7 +41,8 @@ func ProcessAll(base string) error {
 
 			c.Transform(gofile)
 			*/
-			transpiler, err := component.NewTranspiler(f, makeStruct, route, "routes")
+			appPkg := envy.CurrentPackage()
+			transpiler, err := component.NewTranspiler(f, makeStruct, appPkg, route, "routes")
 			if err != nil {
 				log.Println("ERROR", err)
 				return err
