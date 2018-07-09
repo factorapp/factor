@@ -100,7 +100,6 @@ func (s *Transpiler) transcode() error {
 			vectyPackage := "github.com/gowasm/vecty/elem"
 			vectyParamater := ""
 			if !ok {
-				fmt.Println(token.Name.Space, token.Name.Local)
 				if strings.HasPrefix(token.Name.Space, "components") {
 					// not sure if we need this?
 					componentName := strings.TrimLeft(tag, "components.")
@@ -167,14 +166,12 @@ func (s *Transpiler) transcode() error {
 									)
 								}
 							case strings.HasPrefix(v.Name.Space, "vecty"):
-								fmt.Println(v.Name.Space, v.Name.Local, v.Value)
 								field := strings.TrimLeft(v.Name.Local, "on")
 								field = strings.ToLower(field)
 								g.Qual("github.com/gowasm/vecty/event", strings.Title(field)).Call(
 									jen.Id("p." + v.Value),
 								)
 							case strings.HasPrefix(v.Name.Space, "components"):
-								fmt.Println(v.Name.Space, v.Name.Local, v.Value)
 								component := strings.TrimLeft(v.Name.Local, "components.")
 								jen.Id("&" + component + "{}")
 							case v.Name.Local == "xmlns":
