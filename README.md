@@ -22,33 +22,19 @@ Factor is heavily inspired by [Svelte and Sapper](https://sapper.svelte.technolo
 
 ## Requirements
 
-WASM support is only available in Go 1.11, which is not yet officially released, so you'll need to build it from source. Full instructions on doing so are [here](https://golang.org/doc/install/source), but we're making it easy on you here:
+WASM support is only available in Go 1.11, which is not yet officially released, so you'll need to download a pre-release:
 
-```console
-$ git clone https://go.googlesource.com/go
-$ cd go
-$ git checkout v1.11beta1
-$ cd src
-$ ./all.bash
+```bash
+$ go get golang.org/x/build/version/go1.11beta1
 ```
 
-Once you see `ALL TESTS PASSED`, your Go 1.11 beta 1 toolchain is done! Now, move
-the entire `go` directory to `~/gowasm`:
-
-```console
-$ cd ../..
-$ mv go ~/gowasm
-```
-
-And you're good to go :)
+Then, use `go1.11beta1` when building.
 
 ## Development
 
-First, make sure you have built your Go 1.11 beta 1 toolchain (see "Requirements" above). Then, do this:
-
 ```console
 $ cd factor
-$ go install
+$ go1.11beta1 install
 ```
 
 Make sure you have `$GOPATH/bin` in your executable path (i.e. `$PATH`) and your `factor` CLI is ready to go, hot off the presses.
