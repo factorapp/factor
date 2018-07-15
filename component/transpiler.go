@@ -86,8 +86,8 @@ func (s *Transpiler) transcode() error {
 		Separator: ",",
 	}*/
 
-	var transcode func(*xml.Decoder) (jen.Code, error)
-	transcode = func(decoder *xml.Decoder) (code jen.Code, err error) {
+	var transcode func(*xml.Decoder) ([]jen.Code, error)
+	transcode = func(decoder *xml.Decoder) (code []jen.Code, err error) {
 		token, err := decoder.Token()
 		if err != nil {
 			return nil, err
@@ -207,7 +207,7 @@ func (s *Transpiler) transcode() error {
 						return
 					}
 					if c != nil {
-						g.Add(c)
+						g.Add(c...)
 					}
 				}
 			})
@@ -215,10 +215,9 @@ func (s *Transpiler) transcode() error {
 				return nil, outer
 			}
 			if ce != nil {
-
-				return ce, nil
+				return []jen.Code{ce}, nil
 			}
-			return q, nil
+			return []jen.Code{q}, nil
 		case xml.CharData:
 			str := string(token)
 			hasCall := callRegexp.MatchString(str)
@@ -285,55 +284,48 @@ func (s *Transpiler) transcode() error {
 							index = match[1]
 						}
 					*/
-					callOpts := jen.Options{
-						Close:     "",
-						Multi:     true,
-						Open:      "",
-						Separator: ",",
-					}
-					q := jen.CustomFunc(callOpts, func(g *jen.Group) {
-						crResult := callRegexp.FindAllStringIndex(str, -1)
-						index := 0
-						for matchNumber, match := range crResult {
-							var before, between, after string
-							before = str[index:match[0]]
-							fnCall := str[match[0]:match[1]]
-							fnCall = strings.TrimLeft(fnCall, "{vecty-call:")
-							fnCall = strings.Replace(fnCall, "}", "", -1)
-							if matchNumber < len(crResult)-1 {
-								// there's another match
-								between = str[match[1]:crResult[matchNumber+1][0]]
-							}
-							after = str[match[1]:]
-							/*
-								g.Qual("fmt", "Sprintf").Call(
-									jen.Lit("%s%s%s"),
-									jen.Lit(lhs),
-									jen.Id("p."+fnCall+"()"),
-									jen.Lit(rhs),
-								)
-							*/
-							if before != "" && !strings.Contains(before, "vecty-call") {
-								g.Qual("github.com/gowasm/vecty", "Text").Call(
-									jen.Lit(before),
-								)
-							}
-							g.Qual("github.com/gowasm/vecty", "Text").Call(
-								jen.Id("p." + fnCall + "()"),
-							)
-							if between != "" && !strings.Contains(between, "vecty-call") {
-								g.Qual("github.com/gowasm/vecty", "Text").Call(
-									jen.Lit(between),
-								)
-							}
-							if after != "" && !strings.Contains(after, "vecty-call") {
-								g.Qual("github.com/gowasm/vecty", "Text").Call(
-									jen.Lit(after),
-								)
-							}
+					var statements []jen.Code
+					crResult := callRegexp.FindAllStringIndex(str, -1)
+					index := 0
+					for matchNumber, match := range crResult {
+						var before, between, after string
+						before = str[index:match[0]]
+						fnCall := str[match[0]:match[1]]
+						fnCall = strings.TrimLeft(fnCall, "{vecty-call:")
+						fnCall = strings.Replace(fnCall, "}", "", -1)
+						if matchNumber < len(crResult)-1 {
+							// there's another match
+							between = str[match[1]:crResult[matchNumber+1][0]]
 						}
-					})
-					return q, nil
+						after = str[match[1]:]
+						/*
+							g.Qual("fmt", "Sprintf").Call(
+								jen.Lit("%s%s%s"),
+								jen.Lit(lhs),
+								jen.Id("p."+fnCall+"()"),
+								jen.Lit(rhs),
+							)
+						*/
+						if before != "" && !strings.Contains(before, "vecty-call") {
+							statements = append(statements, jen.Qual("github.com/gowasm/vecty", "Text").Call(
+								jen.Lit(before),
+							))
+						}
+						statements = append(statements, jen.Qual("github.com/gowasm/vecty", "Text").Call(
+							jen.Id("p."+fnCall+"()"),
+						))
+						if between != "" && !strings.Contains(between, "vecty-call") {
+							statements = append(statements, jen.Qual("github.com/gowasm/vecty", "Text").Call(
+								jen.Lit(between),
+							))
+						}
+						if after != "" && !strings.Contains(after, "vecty-call") {
+							statements = append(statements, jen.Qual("github.com/gowasm/vecty", "Text").Call(
+								jen.Lit(after),
+							))
+						}
+					}
+					return statements, nil
 
 				}
 				if hasField {
@@ -362,55 +354,48 @@ func (s *Transpiler) transcode() error {
 							index = match[1]
 						}
 					*/
-					callOpts := jen.Options{
-						Close:     "",
-						Multi:     true,
-						Open:      "",
-						Separator: ",",
-					}
-					q := jen.CustomFunc(callOpts, func(g *jen.Group) {
-						crResult := fieldRegexp.FindAllStringIndex(str, -1)
-						index := 0
-						for matchNumber, match := range crResult {
-							var before, between, after string
-							before = str[index:match[0]]
-							field := str[match[0]:match[1]]
-							field = strings.TrimLeft(field, "{vecty-field:")
-							field = strings.Replace(field, "}", "", -1)
-							if matchNumber < len(crResult)-1 {
-								// there's another match
-								between = str[match[1]:crResult[matchNumber+1][0]]
-							}
-							after = str[match[1]:]
-							/*
-								g.Qual("fmt", "Sprintf").Call(
-									jen.Lit("%s%s%s"),
-									jen.Lit(lhs),
-									jen.Id("p."+fnCall+"()"),
-									jen.Lit(rhs),
-								)
-							*/
-							if before != "" && !strings.Contains(before, "vecty-field") {
-								g.Qual("github.com/gowasm/vecty", "Text").Call(
-									jen.Lit(before),
-								)
-							}
-							g.Qual("github.com/gowasm/vecty", "Text").Call(
-								jen.Id("p." + field), 
-							)
-							if between != "" && !strings.Contains(between, "vecty-field") {
-								g.Qual("github.com/gowasm/vecty", "Text").Call(
-									jen.Lit(between),
-								)
-							}
-							if after != "" && !strings.Contains(after, "vecty-field") {
-								g.Qual("github.com/gowasm/vecty", "Text").Call(
-									jen.Lit(after),
-								)
-							}
+					var statements []jen.Code
+					crResult := fieldRegexp.FindAllStringIndex(str, -1)
+					index := 0
+					for matchNumber, match := range crResult {
+						var before, between, after string
+						before = str[index:match[0]]
+						field := str[match[0]:match[1]]
+						field = strings.TrimLeft(field, "{vecty-field:")
+						field = strings.Replace(field, "}", "", -1)
+						if matchNumber < len(crResult)-1 {
+							// there's another match
+							between = str[match[1]:crResult[matchNumber+1][0]]
 						}
-					})
-					return q, nil
+						after = str[match[1]:]
+						/*
+							g.Qual("fmt", "Sprintf").Call(
+								jen.Lit("%s%s%s"),
+								jen.Lit(lhs),
+								jen.Id("p."+fnCall+"()"),
+								jen.Lit(rhs),
+							)
+						*/
+						if before != "" && !strings.Contains(before, "vecty-field") {
+							statements = append(statements, jen.Qual("github.com/gowasm/vecty", "Text").Call(
+								jen.Lit(before),
+							))
+						}
+						statements = append(statements, jen.Qual("github.com/gowasm/vecty", "Text").Call(
+							jen.Id("p."+field),
+						))
+						if between != "" && !strings.Contains(between, "vecty-field") {
+							statements = append(statements, jen.Qual("github.com/gowasm/vecty", "Text").Call(
+								jen.Lit(between),
+							))
+						}
+						if after != "" && !strings.Contains(after, "vecty-field") {
+							statements = append(statements, jen.Qual("github.com/gowasm/vecty", "Text").Call(
+								jen.Lit(after),
+							))
+						}
+					}
+					return statements, nil
 
 				}
 
@@ -419,7 +404,7 @@ func (s *Transpiler) transcode() error {
 			if s == "" {
 				return nil, nil
 			}
-			return jen.Qual("github.com/gowasm/vecty", "Text").Call(jen.Lit(s)), nil
+			return []jen.Code{jen.Qual("github.com/gowasm/vecty", "Text").Call(jen.Lit(s))}, nil
 		case xml.EndElement:
 			return nil, EOT
 		case xml.Comment:
@@ -452,7 +437,7 @@ func (s *Transpiler) transcode() error {
 			return nil
 		}
 		if c != nil {
-			elements = append(elements, c)
+			elements = append(elements, c...)
 		}
 	}
 	/*
