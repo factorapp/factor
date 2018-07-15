@@ -477,6 +477,7 @@ func (s *Transpiler) transcode() error {
 	} else {
 		file.Func().Params(jen.Id("p").Op("*").Id(s.componentName)).Id("Render").Params().Qual("github.com/gowasm/vecty", "ComponentOrHTML").Block(
 			// TODO: wrap in if - only body for a "route"
+			// TODO: Are you sure this is right? It looks like if len(elements) > 1 this will break?
 			jen.Return(elements...),
 		)
 	}
