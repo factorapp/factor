@@ -99,11 +99,16 @@ func (s *Transpiler) transcode() error {
 			vectyFunction, ok := transpiler.ElemNames[tag]
 			vectyPackage := "github.com/gowasm/vecty/elem"
 			vectyParamater := ""
+			var ce *jen.Statement
 			if !ok {
 				if strings.HasPrefix(token.Name.Space, "components") {
 					// not sure if we need this?
 					componentName := strings.TrimLeft(tag, "components.")
-					return transpiler.ComponentElement(s.appPackage, componentName, &token), nil
+					ce = transpiler.ComponentElement(s.appPackage, componentName, &token)
+					vectyFunction = ""
+					//ce.Render(os.Stdout)
+					//return ce, nil
+					//jen.Add(ce)
 				} else {
 					vectyFunction = "Tag"
 					vectyPackage = "github.com/gowasm/vecty"
@@ -111,11 +116,12 @@ func (s *Transpiler) transcode() error {
 				}
 			}
 			var outer error
+
 			q := jen.Qual(vectyPackage, vectyFunction).CustomFunc(call, func(g *jen.Group) {
 				if vectyParamater != "" {
 					g.Lit(vectyParamater)
 				}
-				if len(token.Attr) > 0 {
+				if ce == nil && len(token.Attr) > 0 {
 					g.Qual("github.com/gowasm/vecty", "Markup").CustomFunc(call, func(g *jen.Group) {
 						for _, v := range token.Attr {
 							switch {
@@ -207,6 +213,10 @@ func (s *Transpiler) transcode() error {
 			})
 			if outer != nil {
 				return nil, outer
+			}
+			if ce != nil {
+
+				return ce, nil
 			}
 			return q, nil
 		case xml.CharData:
@@ -478,8 +488,11 @@ func (s *Transpiler) transcode() error {
 			jen.Qual("github.com/gowasm/vecty", "Core"),
 		)
 	}
-	if s.packageName == "routes" {
+	if s.packageName == "routes" || s.packageName == "pages" {
 		file.Func().Params(jen.Id("p").Op("*").Id(s.componentName)).Id("Render").Params().Qual("github.com/gowasm/vecty", "ComponentOrHTML").Block(
+			jen.Qual("github.com/gowasm/vecty", "SetTitle").Call(
+				jen.Id("p.GetTitle()"),
+			),
 			jen.Return(
 				// TODO: wrap in if - only body for a "route"
 				jen.Qual("github.com/gowasm/vecty/elem", "Body").Custom(call, elements...),
