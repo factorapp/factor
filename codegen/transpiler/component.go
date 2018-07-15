@@ -15,41 +15,22 @@ func ComponentElement(appPackage, componentName string, token *xml.StartElement)
 	// vectyParamater = tag
 	qual = true
 	component = strings.TrimLeft(token.Name.Local, "components.")
+	// I'm not sure what qual was intended to mean (it's always true now) but it looks like perhaps you're
+	// trying to avoid using Qual if the package path == local path? If so, no need! Qual handles this
+	// gracefully... See: https://github.com/dave/jennifer#qual
 	if qual {
-		baseDecl := jen.Id("&").Add(jen.Qual(vectyPackage, "").Add(
-			jen.Id(component),
-		))
-		attrCall := jen.Options{
-			Close:     "",
-			Multi:     false,
-			Open:      "",
-			Separator: ",",
-		}
-		block := jen.CustomFunc(attrCall, func(g *jen.Group) {
+		baseDecl := jen.Op("&").Qual(vectyPackage, component).Values(jen.DictFunc(func(d jen.Dict) {
 			for _, v := range token.Attr {
-				g.Id(v.Name.Local).Id(":").Lit(v.Value).Id(",")
+				d[jen.Id(v.Name.Local)] = jen.Lit(v.Value)
 			}
-		})
-
-		baseDecl.Block(block)
+		}))
 		return baseDecl
 	}
-	baseDecl := jen.Id("&").Add(
-		jen.Id(component),
-	)
-	attrCall := jen.Options{
-		Close:     "",
-		Multi:     true,
-		Open:      "",
-		Separator: ",",
-	}
-	block := jen.CustomFunc(attrCall, func(g *jen.Group) {
+	baseDecl := jen.Op("&").Id(component).Values(jen.DictFunc(func(d jen.Dict) {
 		for _, v := range token.Attr {
-			g.Id(v.Name.Local).Id(":").Lit(v.Value).Id(",")
+			d[jen.Id(v.Name.Local)] = jen.Lit(v.Value)
 		}
-	})
-	baseDecl.Block(block)
-
+	}))
 	return baseDecl
 
 }
