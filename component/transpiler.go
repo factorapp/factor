@@ -164,7 +164,7 @@ func (s *Transpiler) transcode() error {
 									field := strings.TrimLeft(v.Value, "{vecty-field:")
 									field = field[:len(field)-1]
 									g.Qual("github.com/gowasm/vecty/prop", transpiler.StringProps[v.Name.Local]).Call(
-										jen.Id("p." + field),
+										jen.Id("p").Dot(field),
 									)
 								} else {
 									g.Qual("github.com/gowasm/vecty/prop", transpiler.StringProps[v.Name.Local]).Call(
@@ -175,11 +175,11 @@ func (s *Transpiler) transcode() error {
 								field := strings.TrimLeft(v.Name.Local, "on")
 								field = strings.ToLower(field)
 								g.Qual("github.com/gowasm/vecty/event", strings.Title(field)).Call(
-									jen.Id("p." + v.Value),
+									jen.Id("p").Dot(v.Value),
 								)
 							case strings.HasPrefix(v.Name.Space, "components"):
 								component := strings.TrimLeft(v.Name.Local, "components.")
-								jen.Id("&" + component + "{}")
+								jen.Op("&").Id(component).Values()
 							case v.Name.Local == "xmlns":
 								g.Qual("github.com/gowasm/vecty", "Namespace").Call(
 									jen.Lit(v.Value),
@@ -233,7 +233,7 @@ func (s *Transpiler) transcode() error {
 						n = strings.TrimRight(n, "}")
 						return jen.Qual("github.com/gowasm/vecty", "Text").Call(
 							// TODO: struct qualifier
-							jen.Id("p." + n),
+							jen.Id("p").Dot(n),
 						), nil
 					}
 				*/
@@ -246,7 +246,7 @@ func (s *Transpiler) transcode() error {
 							jen.Lit(lhs),
 						)
 						stmt.Qual("github.com/gowasm/vecty", "Text").Call(
-							jen.Id("p." + fnCall + "()"),
+							jen.Id("p").Dot(fnCall).Call(),
 						)
 						stmt.Qual("github.com/gowasm/vecty", "Text").Call(
 							jen.Lit(rhs),
@@ -302,7 +302,7 @@ func (s *Transpiler) transcode() error {
 							g.Qual("fmt", "Sprintf").Call(
 								jen.Lit("%s%s%s"),
 								jen.Lit(lhs),
-								jen.Id("p."+fnCall+"()"),
+								jen.Id("p").Dot(fnCall).Call(),
 								jen.Lit(rhs),
 							)
 						*/
@@ -312,7 +312,7 @@ func (s *Transpiler) transcode() error {
 							))
 						}
 						statements = append(statements, jen.Qual("github.com/gowasm/vecty", "Text").Call(
-							jen.Id("p."+fnCall+"()"),
+							jen.Id("p").Dot(fnCall).Call(),
 						))
 						if between != "" && !strings.Contains(between, "vecty-call") {
 							statements = append(statements, jen.Qual("github.com/gowasm/vecty", "Text").Call(
@@ -372,7 +372,7 @@ func (s *Transpiler) transcode() error {
 							g.Qual("fmt", "Sprintf").Call(
 								jen.Lit("%s%s%s"),
 								jen.Lit(lhs),
-								jen.Id("p."+fnCall+"()"),
+								jen.Id("p").Dot(fnCall).Call(),
 								jen.Lit(rhs),
 							)
 						*/
@@ -382,7 +382,7 @@ func (s *Transpiler) transcode() error {
 							))
 						}
 						statements = append(statements, jen.Qual("github.com/gowasm/vecty", "Text").Call(
-							jen.Id("p."+field),
+							jen.Id("p").Dot(field),
 						))
 						if between != "" && !strings.Contains(between, "vecty-field") {
 							statements = append(statements, jen.Qual("github.com/gowasm/vecty", "Text").Call(
@@ -467,7 +467,7 @@ func (s *Transpiler) transcode() error {
 	if s.packageName == "routes" || s.packageName == "pages" {
 		file.Func().Params(jen.Id("p").Op("*").Id(s.componentName)).Id("Render").Params().Qual("github.com/gowasm/vecty", "ComponentOrHTML").Block(
 			jen.Qual("github.com/gowasm/vecty", "SetTitle").Call(
-				jen.Id("p.GetTitle()"),
+				jen.Id("p").Dot("GetTitle").Call(),
 			),
 			jen.Return(
 				// TODO: wrap in if - only body for a "route"
