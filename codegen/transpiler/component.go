@@ -16,36 +16,18 @@ func ComponentElement(appPackage, componentName string, token *xml.StartElement)
 	qual = true
 	component = strings.TrimLeft(token.Name.Local, "components.")
 	if qual {
-		baseDecl := jen.Id("&").Qual(vectyPackage, "").Id(component)
-		attrCall := jen.Options{
-			Close:     "",
-			Multi:     false,
-			Open:      "",
-			Separator: ",",
-		}
-		block := jen.CustomFunc(attrCall, func(g *jen.Group) {
+		baseDecl := jen.Id("&").Qual(vectyPackage, "").Id(component).Values(jen.DictFunc(func(d jen.Dict) {
 			for _, v := range token.Attr {
-				g.Id(v.Name.Local).Id(":").Lit(v.Value).Id(",")
+				d[jen.Id(v.Name.Local)] = jen.Lit(v.Value)
 			}
-		})
-
-		baseDecl.Block(block)
+		}))
 		return baseDecl
 	}
-	baseDecl := jen.Id("&").Id(component)
-	attrCall := jen.Options{
-		Close:     "",
-		Multi:     true,
-		Open:      "",
-		Separator: ",",
-	}
-	block := jen.CustomFunc(attrCall, func(g *jen.Group) {
+	baseDecl := jen.Id("&").Id(component).Values(jen.DictFunc(func(d jen.Dict) {
 		for _, v := range token.Attr {
-			g.Id(v.Name.Local).Id(":").Lit(v.Value).Id(",")
+			d[jen.Id(v.Name.Local)] = jen.Lit(v.Value)
 		}
-	})
-	baseDecl.Block(block)
-
+	}))
 	return baseDecl
 
 }
