@@ -243,16 +243,15 @@ func (s *Transpiler) transcode() error {
 						fmt.Println("call qualifier:", str, name)
 						fnCall := strings.TrimLeft(name, "{vecty-call:")
 						fnCall = strings.Replace(fnCall, "}", "", -1)
-						stmt := jen.Add(
-							jen.Qual("github.com/gowasm/vecty", "Text").Call(
-								jen.Lit(lhs),
-							))
-						stmt.Add(jen.Qual("github.com/gowasm/vecty", "Text").Call(
+						stmt := jen.Qual("github.com/gowasm/vecty", "Text").Call(
+							jen.Lit(lhs),
+						)
+						stmt.Qual("github.com/gowasm/vecty", "Text").Call(
 							jen.Id("p." + fnCall + "()"),
-						))
-						stmt.Add(jen.Qual("github.com/gowasm/vecty", "Text").Call(
+						)
+						stmt.Qual("github.com/gowasm/vecty", "Text").Call(
 							jen.Lit(rhs),
-						))
+						)
 						return stmt, nil
 
 					}
@@ -315,26 +314,22 @@ func (s *Transpiler) transcode() error {
 								)
 							*/
 							if before != "" && !strings.Contains(before, "vecty-call") {
-								g.Add(
-									jen.Qual("github.com/gowasm/vecty", "Text").Call(
-										jen.Lit(before),
-									))
+								g.Qual("github.com/gowasm/vecty", "Text").Call(
+									jen.Lit(before),
+								)
 							}
-							g.Add(
-								jen.Qual("github.com/gowasm/vecty", "Text").Call(
-									jen.Id("p." + fnCall + "()"),
-								))
+							g.Qual("github.com/gowasm/vecty", "Text").Call(
+								jen.Id("p." + fnCall + "()"),
+							)
 							if between != "" && !strings.Contains(between, "vecty-call") {
-								g.Add(
-									jen.Qual("github.com/gowasm/vecty", "Text").Call(
-										jen.Lit(between),
-									))
+								g.Qual("github.com/gowasm/vecty", "Text").Call(
+									jen.Lit(between),
+								)
 							}
 							if after != "" && !strings.Contains(after, "vecty-call") {
-								g.Add(
-									jen.Qual("github.com/gowasm/vecty", "Text").Call(
-										jen.Lit(after),
-									))
+								g.Qual("github.com/gowasm/vecty", "Text").Call(
+									jen.Lit(after),
+								)
 							}
 						}
 					})
@@ -396,26 +391,22 @@ func (s *Transpiler) transcode() error {
 								)
 							*/
 							if before != "" && !strings.Contains(before, "vecty-field") {
-								g.Add(
-									jen.Qual("github.com/gowasm/vecty", "Text").Call(
-										jen.Lit(before),
-									))
+								g.Qual("github.com/gowasm/vecty", "Text").Call(
+									jen.Lit(before),
+								)
 							}
-							g.Add(
-								jen.Qual("github.com/gowasm/vecty", "Text").Call(
-									jen.Id("p." + field),
-								))
+							g.Qual("github.com/gowasm/vecty", "Text").Call(
+								jen.Id("p." + field), 
+							)
 							if between != "" && !strings.Contains(between, "vecty-field") {
-								g.Add(
-									jen.Qual("github.com/gowasm/vecty", "Text").Call(
-										jen.Lit(between),
-									))
+								g.Qual("github.com/gowasm/vecty", "Text").Call(
+									jen.Lit(between),
+								)
 							}
 							if after != "" && !strings.Contains(after, "vecty-field") {
-								g.Add(
-									jen.Qual("github.com/gowasm/vecty", "Text").Call(
-										jen.Lit(after),
-									))
+								g.Qual("github.com/gowasm/vecty", "Text").Call(
+									jen.Lit(after),
+								)
 							}
 						}
 					})

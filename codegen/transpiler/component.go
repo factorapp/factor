@@ -16,9 +16,7 @@ func ComponentElement(appPackage, componentName string, token *xml.StartElement)
 	qual = true
 	component = strings.TrimLeft(token.Name.Local, "components.")
 	if qual {
-		baseDecl := jen.Id("&").Add(jen.Qual(vectyPackage, "").Add(
-			jen.Id(component),
-		))
+		baseDecl := jen.Id("&").Qual(vectyPackage, "").Id(component)
 		attrCall := jen.Options{
 			Close:     "",
 			Multi:     false,
@@ -34,9 +32,7 @@ func ComponentElement(appPackage, componentName string, token *xml.StartElement)
 		baseDecl.Block(block)
 		return baseDecl
 	}
-	baseDecl := jen.Id("&").Add(
-		jen.Id(component),
-	)
+	baseDecl := jen.Id("&").Id(component)
 	attrCall := jen.Options{
 		Close:     "",
 		Multi:     true,
