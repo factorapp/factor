@@ -10,7 +10,7 @@ import (
 var reg = regexp.MustCompile("[^a-zA-Z0-9]+")
 
 func IsHTML(info os.FileInfo) bool {
-	return filepath.Ext(info.Name()) == ".html"
+	return filepath.Ext(info.Name()) == ".html" || filepath.Ext(info.Name()) == ".ghtml"
 }
 
 func GeneratedGoFileName(base, name string) string {
