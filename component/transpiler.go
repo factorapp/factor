@@ -144,7 +144,13 @@ func (s *Transpiler) transcode() error {
 								g.Qual("github.com/gowasm/vecty", "Class").CallFunc(func(g *jen.Group) {
 									classes := strings.Split(v.Value, " ")
 									for _, class := range classes {
-										g.Lit(class)
+										if strings.HasPrefix(class, "{vecty-field:") {
+											field := strings.TrimLeft(class, "{vecty-field:")
+											field = field[:len(field)-1]
+											g.Add(jen.Id("p").Dot(field))
+										} else {
+											g.Lit(class)
+										}
 									}
 								})
 							case strings.HasPrefix(v.Name.Local, "data-"):
