@@ -3,12 +3,24 @@
 package routes
 
 import (
+	"fmt"
+
 	components "github.com/factorapp/factor/examples/components"
+	"github.com/factorapp/factor/examples/models"
 	"github.com/gowasm/vecty"
 	"github.com/gowasm/vecty/elem"
+	"github.com/satori/go.uuid"
 )
 
 func (p *Index) Render() vecty.ComponentOrHTML {
+	cl := &models.TodoClient{}
+
+	uid := uuid.Must(uuid.NewV4())
+	todo, err := cl.Get(uid)
+	if err != nil {
+		fmt.Println("Couldnt create client:", err)
+	}
+	fmt.Println(todo)
 	return elem.Body(
 		elem.Body(
 			&components.Nav{},

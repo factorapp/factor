@@ -20,13 +20,7 @@ func main() {
 		vecty.SetTitle("Factor: Home")
 		vecty.RenderBody(&routes.Index{})
 	})
-	r.HandleFunc("/about", func(context *router.Context) {
 
-		// The handler for this route simply grabs the name parameter
-		// from the map of params and says hello.
-		vecty.SetTitle("Factor: About")
-		vecty.RenderBody(&routes.About{})
-	})
 	// You must call Start in order to start listening for changes
 	// in the url and trigger the appropriate handler function.
 	r.Start()
